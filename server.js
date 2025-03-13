@@ -2,7 +2,7 @@ require("dotenv").config();
 const myNodeMailer = require("nodemailer");
 const myExpress = require("express");                           const myApp = myExpress();
 
-const PORT = 3500;
+const PORT = process.env.PORT;
 const myCors = require('cors');
 myApp.use(myCors());
 myApp.use(myExpress.json());
