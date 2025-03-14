@@ -36,6 +36,8 @@ var  users = [
         {name:"OD",age:"32"}
     ];
 var user;
+myApp.get("/health", (req,res)=>{
+res.status(200)});
 
 myApp.get("/api/userDetails/:name", async (req, res)=>{
 
