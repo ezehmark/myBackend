@@ -15,7 +15,8 @@ pass:process.env.EMAIL_PASS}});
 
 myApp.post("/send-mail", async(req,res)=>{
 try{
-const {recipient,subject,message} = req.body;
+var {recipient,subject,message} = req.body;
+	message="The best tech hub is here! At BytanceTech, you get your web/app development done by experienced and professional developers. Reach out to us today for projects like static and dynamic websites, apps and web apps, Search Engine Optimizations(SEO), cybersecurity, productive and uptime robots to fast-track social media engagements, and many more in-demand services\nYou have this rare privilege to discuss with the team-lead:\nMessage .Mark{Ezeh} on WhatsApp. https://wa.me/2349036202766`"
 const mailOptions = {
 	from:process.env.EMAIL_USER,
 	to:recipient,
