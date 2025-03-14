@@ -37,7 +37,7 @@ var  users = [
     ];
 var user;
 myApp.get("/health", (req,res)=>{
-res.status(200)});
+res.status(200).json({msg:"Backend is now Active"})});
 
 myApp.get("/api/userDetails/:name", async (req, res)=>{
 
