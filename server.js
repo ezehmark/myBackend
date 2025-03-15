@@ -32,6 +32,10 @@ catch(error){
 }});
 var  users = [
         {name:"Mark", age:"27" },
+	{name:"Peter",age:56},
+	{name:"Jesus", age:"ageless" },
+        {name:"Christ",age:"infinity"},
+
         {name:"James", age:"40"},
         {name:"OD",age:"32"}
     ];
