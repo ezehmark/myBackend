@@ -24,7 +24,7 @@ const mailOptions = {
 }
 
 await myTransporter.sendMail(mailOptions);
-res.json({message:"Your email has been sent successfully to the designated receiving email address. The work of Mark Ezeh!"});
+res.status(200).json({message:"Your email has been sent successfully to the designated receiving email address. The work of Mark Ezeh!",msg:"Bravo! Email sent successfully"});
 
 }
 catch(error){
