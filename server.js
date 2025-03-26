@@ -20,7 +20,7 @@ const mailOptions = {
 	from:process.env.EMAIL_USER,
 	to:recipient,
 	subject:subject,
-	text:message
+	html:message
 }
 
 await myTransporter.sendMail(mailOptions);
