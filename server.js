@@ -58,7 +58,7 @@ myApp.post("/chats", (req, res) => {
   try {
     const { myChats } = req.body;
     chats = [...chats, ...myChats];
-    res.status(200).json({ msg: "Chat Sent" });
+    res.status(200).json({ msg: "Chat Sent!" });
   } catch (err) {
     res.json({ errMsg: err.message});
   }
