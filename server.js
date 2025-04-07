@@ -27,12 +27,10 @@ myApp.post("/send-mail", async (req, res) => {
     };
 
     await myTransporter.sendMail(mailOptions);
-    res
-      .status(200)
-      .json({
-        message: `Your email has been sent successfully to the designated receiving email address.\n${recipient}\n The work of Mark Ezeh!`,
-        msg: "✉ Email sent successfully",
-      });
+    res.status(200).json({
+      message: `Your email has been sent successfully to the designated receiving email address.\n${recipient}\n The work of Mark Ezeh!`,
+      msg: "✉ Email sent successfully",
+    });
   } catch (error) {
     res.json({
       message: `Attempt to send email message failed. This is due to ${error}`,
@@ -40,15 +38,44 @@ myApp.post("/send-mail", async (req, res) => {
   }
 });
 var users = [
-  { name: "Mark", age: "27" ,uri:"https://i.postimg.cc/02bZZbk4/IMG-20241117-082335.jpg"},
-  { name: "Peter", age: 56,uri:"" },
-  { name: "Jesus", age: "ageless",uri:"" },
-  { name: "Christ", age: "infinity",uri:"" },
+  {
+    name: "Mark",
+    age: "27",
+    uri: "https://i.postimg.cc/02bZZbk4/IMG-20241117-082335.jpg",
+  },
+  { name: "Peter", age: 56, uri: "" },
+  { name: "Jesus", age: "ageless", uri: "" },
+  { name: "Christ", age: "infinity", uri: "" },
 
-  { name: "James", age: "40",uri:"" },
-  { name: "OD", age: "32",uri:"" },
+  { name: "James", age: "40", uri: "" },
+  { name: "OD", age: "32", uri: "" },
 ];
+
+const chats = [];
 var user;
+
+myApp.post("/chats", (req, res) => {
+  try {
+    const { myChats } = req.body;
+    chats = [...chats, myChats];
+    res.status(200).json({ msg: "Chat Sent" });
+  } catch (err) {
+    res.json({ errMsg: err });
+  }
+});
+
+myApp.get("/chat/messages", (req, res) => {
+  try {
+    const message = req.params.messages;
+    const newChats = chats;
+    if (message) {
+      res.json(newChats);
+    }
+  } catch (error) {
+    console.error(error);
+  }
+});
+
 myApp.get("/health", (req, res) => {
   res.status(200).json({ msg: "Backend is now Active" });
 });
