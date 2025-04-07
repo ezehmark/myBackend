@@ -51,28 +51,27 @@ var users = [
   { name: "OD", age: "32", uri: "" },
 ];
 
-const chats = [];
+var chats = [];
 var user;
 
 myApp.post("/chats", (req, res) => {
   try {
     const { myChats } = req.body;
-    chats = [...chats, myChats];
+    chats = [...chats, ...myChats];
     res.status(200).json({ msg: "Chat Sent" });
   } catch (err) {
-    res.json({ errMsg: err });
+    res.json({ errMsg: err.message});
   }
 });
 
-myApp.get("/chat/messages", (req, res) => {
+myApp.get("/chats", (req, res) => {
   try {
-    const message = req.params.messages;
-    const newChats = chats;
-    if (message) {
-      res.json(newChats);
-    }
+
+      res.json(chats);
+    
   } catch (error) {
     console.error(error);
+res.json({errMsg:eror.message});
   }
 });
 
