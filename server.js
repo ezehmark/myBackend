@@ -1,12 +1,20 @@
 require("dotenv").config();
 const myNodeMailer = require("nodemailer");
 const myExpress = require("express");
+const http = require("http");
+const { Server } = require("socket.io");
+const server = http.createServer(myApp);
+const myCors = require("cors");
+const io = new Server(server, {
+  myCors: { origin: ["*"], methods: ["GET", "POST"] },
+});
 const myApp = myExpress();
 
 const PORT = process.env.PORT;
-const myCors = require("cors");
 myApp.use(myCors());
 myApp.use(myExpress.json());
+
+var chats = [];
 
 const myTransporter = myNodeMailer.createTransport({
   service: "gmail",
@@ -14,6 +22,12 @@ const myTransporter = myNodeMailer.createTransport({
     user: process.env.EMAIL_USER,
     pass: process.env.EMAIL_PASS,
   },
+});
+
+socket.on("send-chats", (msg, callback) => {
+  chats.push(msg);
+  io.emit("receive-chats", msg);
+  callback({ info: "Chat seet via Socket" });
 });
 
 myApp.post("/send-mail", async (req, res) => {
@@ -51,7 +65,6 @@ var users = [
   { name: "OD", age: "32", uri: "" },
 ];
 
-var chats = [];
 var user;
 
 myApp.post("/chats", (req, res) => {
@@ -60,18 +73,16 @@ myApp.post("/chats", (req, res) => {
     chats = [...chats, myChats];
     res.status(200).json({ msg: "Chat Sent" });
   } catch (err) {
-    res.json({ errMsg: err.message});
+    res.json({ errMsg: err.message });
   }
 });
 
 myApp.get("/chats", (req, res) => {
   try {
-
-      res.json(chats);
-    
+    res.json(chats);
   } catch (error) {
     console.error(error);
-res.json({errMsg:eror.message});
+    res.json({ errMsg: eror.message });
   }
 });
 
