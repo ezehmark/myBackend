@@ -7,7 +7,7 @@ const { Server } = require("socket.io");
 const server = http.createServer(myApp);
 const myCors = require("cors");
 const io = new Server(server, {
-  myCors: { origin: ["*"], methods: ["GET", "POST"] },
+  cors: { origin: ["*"], methods: ["GET", "POST"] },
 });
 
 const PORT = process.env.PORT;
@@ -29,7 +29,7 @@ io.on("connection", (socket) => {
   socket.on("send-chats", (msg, callback) => {
     chats.push(msg);
     io.emit("receive-chats", msg);
-    callback({ info: "Chat seet via Socket" });
+    callback({ info: "Chat sent via Socket" });
   });
   socket.on("disconnect", () => console.log("User disconnected"));
 });
