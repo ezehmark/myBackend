@@ -6,11 +6,9 @@ const http = require("http");
 const { Server } = require("socket.io");
 const server = http.createServer(myApp);
 const myCors = require("cors");
-const io = new Server(server, {
-  cors: { origin: ["*"], methods: ["GET", "POST"] },
-});
 
 const PORT = process.env.PORT;
+const io = new Server(PORT);
 myApp.use(myCors());
 myApp.use(myExpress.json());
 
