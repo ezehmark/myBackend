@@ -3,7 +3,7 @@ const myNodeMailer = require("nodemailer");
 const myExpress = require("express");
 const myApp = myExpress();
 const {createServer} = require("http");
-const { Server } = ("socket.io");
+const { Server } = require("socket.io");
 const server = createServer(myApp);
 const myCors = require("cors");
 
