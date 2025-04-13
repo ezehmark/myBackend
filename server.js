@@ -2,13 +2,13 @@ require("dotenv").config();
 const myNodeMailer = require("nodemailer");
 const myExpress = require("express");
 const myApp = myExpress();
-const http = require("http");
-const { Server } = require("socket.io");
-const server = http.createServer(myApp);
+const {createServer} = require("http");
+const { Server } = ("socket.io");
+const server = createServer(myApp);
 const myCors = require("cors");
 
 const PORT = process.env.PORT;
-const io = new Server(PORT);
+const io = new Server(server);
 myApp.use(myCors());
 myApp.use(myExpress.json());
 
