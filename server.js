@@ -70,8 +70,10 @@ var users = [
 var user;
 const Pusher = require("pusher");
 const myPusher = new Pusher({
-appId: "1974222",                                               key: "cedb00ee1a68a0b92ef8",
-  secret: "a06dbde822e1d69587f2",                                 cluster: "eu",
+appId: "1974391",
+  key: "c75eeee72429097c0ceb",
+  secret: "994f6ac4bb486a93502d",
+  cluster: "eu",
   useTLS: true});
 
 
