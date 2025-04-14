@@ -68,25 +68,26 @@ var users = [
 ];
 
 var user;
+const Pusher = require("pusher");
+const myPusher = new Pusher({
+appId: "1974222",                                               key: "cedb00ee1a68a0b92ef8",
+  secret: "a06dbde822e1d69587f2",                                 cluster: "eu",
+  useTLS: true});
+
 
 myApp.post("/chats", (req, res) => {
   try {
     const { myChats } = req.body;
     chats = [...chats, myChats];
+ myPusher.trigger("chat-channel", "chatance", myChats);
     res.status(200).json({ msg: "Chat Sent" });
   } catch (err) {
     res.json({ errMsg: err.message });
   }
 });
 
-myApp.get("/chats", (req, res) => {
-  try {
-    res.json(chats);
-  } catch (error) {
-    console.error(error);
-    res.json({ errMsg: eror.message });
-  }
-});
+
+
 
 myApp.get("/health", (req, res) => {
   res.status(200).json({ msg: "Backend is now Active" });
