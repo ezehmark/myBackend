@@ -70,11 +70,11 @@ var users = [
 var user;
 const Pusher = require("pusher");
 const myPusher = new Pusher({
-appId: "1974391",
-  key: "c75eeee72429097c0ceb",
-  secret: "994f6ac4bb486a93502d",
-  cluster: "eu",
-  useTLS: true});
+app_id = "1974555"
+key = "9f6c0b8345c2297e09e6"
+secret = "13f0f60338b5057aad38"
+cluster = "eu"
+useTLS: true});
 
 
 myApp.post("/chats", (req, res) => {
