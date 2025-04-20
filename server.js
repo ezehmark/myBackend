@@ -5,6 +5,7 @@ const myApp = myExpress();
 const {createServer} = require("http");
 const { Server } = require("socket.io");
 const server = createServer(myApp);
+const axios = requir("axios");
 const myCors = require("cors");
 
 const PORT = process.env.PORT;
@@ -123,6 +124,11 @@ myApp.post("/api/userDetails", async (req, res) => {
     console.error(`server encountered ${error} while uploading`);
   }
 });
+
+myApp.get("/prices", async (req,res)=>{
+const response = await axios.get("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana&vs_currencies=usd");
+res.json(response);
+ });
 
 myApp.listen(PORT, () => {
   console.log(`My App is currently running at port: ${PORT}`);
