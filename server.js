@@ -133,7 +133,7 @@ myWs.on("connection",(socket)=>{
 const coinCapWs = new  WebSocket("wss://wss.coincap.io/prices?assets=bitcoin,ethereum,solana");
 
 coinCapWs.on("message",(data)=>{
-socket.send(data)});
+socket.send(data.toString())});
 coinCapWs.on("close",()=>socket.close());
 
 socket.on("close", ()=>socket.close());
