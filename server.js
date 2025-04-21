@@ -29,15 +29,6 @@ const myTransporter = myNodeMailer.createTransport({
   },
 });
 
-io.on("connection", (socket) => {
-  console.log("New user connected!");
-  socket.on("send-chats", (msg, callback) => {
-    chats.push(msg);
-    io.emit("receive-chats", msg);
-    callback({ info: "Chat sent via Socket" });
-  });
-  socket.on("disconnect", () => console.log("User disconnected"));
-});
 
 myApp.post("/send-mail", async (req, res) => {
   try {
