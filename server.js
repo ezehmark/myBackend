@@ -7,7 +7,7 @@ const { Server } = require("socket.io");
 const axios = require("axios");
 const myCors = require("cors");
 
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3000;
 const http = require("http");
 const WebSocket = require("ws");
 
