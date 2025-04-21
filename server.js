@@ -4,7 +4,6 @@ const myExpress = require("express");
 const myApp = myExpress();
 const {createServer} = require("http");
 const { Server } = require("socket.io");
-const server = createServer(myApp);
 const axios = require("axios");
 const myCors = require("cors");
 
