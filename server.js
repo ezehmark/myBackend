@@ -9,9 +9,16 @@ const axios = require("axios");
 const myCors = require("cors");
 
 const PORT = process.env.PORT;
-const io = new Server(server);
+const http = require("http");
+const WebSocket = require("ws");
+
+const server = http.createServer(myApp);
+
+const myWs = new WebSocket.Server({server});
+
 myApp.use(myCors());
 myApp.use(myExpress.json());
+
 
 var chats = [];
 
@@ -129,6 +136,19 @@ myApp.get("/prices", async (req,res)=>{
 const response = await axios.get("https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana&vs_currencies=usd");
 res.json(response);
  });
+
+const WS_API_KEY ="d9bbb9c22fa2553ad23fd9e95430ce31f26565427716b263fcc82b3565e90d8a";
+
+myWs.on("connection",(socket)=>{
+const coinCapWs = new  WebSocket("wss://wss.coincap.io/prices?assets=bitcoin,ethereum,solana",{headers:{Authorization:`Bearer ${WS_API_KEY}`}});
+
+coinCapWs.on("message",(data)=>{
+socket.send(data)});
+coinCapWs.on("close",()=>socket.close());
+
+socket.on("close", ()=>socket.close());
+
+});
 
 myApp.listen(PORT, () => {
   console.log(`My App is currently running at port: ${PORT}`);
