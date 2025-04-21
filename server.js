@@ -140,6 +140,6 @@ socket.on("close", ()=>socket.close());
 
 });
 
-myApp.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`My App is currently running at port: ${PORT}`);
 });
