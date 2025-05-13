@@ -6,14 +6,18 @@ const {createServer} = require("http");
 const { Server } = require("socket.io");
 const axios = require("axios");
 const myCors = require("cors");
+const Mongoose = require("mongoose");
 
 const PORT = process.env.PORT || 3000;
 const http = require("http");
 const WebSocket = require("ws");
+const {v4 : uuidv4} = require("uuid");
 
 const server = http.createServer(myApp);
 
 const myWs = new WebSocket.Server({server});
+const {Resend} = require("resend");
+const resend = new Resend("re_9XM2FoGB_MykVFypWBQDC9tgwiQ7vSzk5");
 
 myApp.use(myCors());
 myApp.use(myExpress.json());
@@ -138,6 +142,102 @@ coinCapWs.on("close",()=>socket.close());
 socket.on("close", ()=>socket.close());
 
 });
+
+const mongooseSchema = new Mongoose.Schema({
+	verificationToken:{type:String},
+email:{type:String},
+name:{type:String},
+isVerified:{type:Boolean,default:false},
+});
+const Bitbanker_User = Mongoose.model("Bitbanker_User",mongooseSchema);
+
+myApp.get("verify/:token", async(req,res)=>{
+try{
+	const userToken = req.params.token;
+	const existUser = await Bitbanker_User.findOne({token:userToken});
+if(existUser){
+res.json({msg:"You are now registered",redirectLink:"home"});
+	exitUser.isVerified=true;
+	await existUser.save();
+}
+	else{res.json({msg:"invalid or expired token access"})}}
+catch(error){res.json({msgErr:`Failed due to ${error}`})}
+
+});
+
+
+
+myApp.post("/postAndVerify", async(req,res)=>{
+try{const {email,name}=req.body;
+const token = uuidv4();
+const existedUser = Bitbanker_User.find({email});
+	if(existedUser){res.json({msg:"You have registered before"})}
+const verificationLink = `https://mybackend-oftz.onrender.com/verify/${token}`;
+const newUser = new Bitbanker_User({email,name,token,isVerified:false});
+
+await newUser.save();
+
+await resend.emails.send({
+from:'onboarding@resend.dev',
+to:email,
+subject:"Verify your email address, to complete signup",
+html:`<!DOCTYPE html>
+<html>                                                                                                                  <head>                                                                                                                  <meta charset="UTF-8">                                                                                                <title>Web and App Technology Simplified</title>
+  </head>                                                                                                               <body style="margin: 0; padding: 0; background-color: #f4f4f4;">                                                        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color: #f4f4f4; padding: 20px;">
+      <tr>                                                                                                                    <td align="center">
+          <table role="presentation" width="350px" cellspacing="0" cellpadding="0" border="0" style="background-color: white; border: 2px solid #222021; border-radius: 20px; padding: 15px; text-align: center;">                                      <!-- Logo -->                                                                                                         <tr>                                                                                                                    <td style="background-color: #222021; color: white; font-size: 20px; padding: 10px; border-radius: 0px 2
+0px 0px 20px;">
+                <b style="color:#f7b21d">Bytance</b><b style="color:#d50204">Tech</b>
+              </td>                                                                                                               </tr>                                                                                                     
+            <!-- Greeting -->
+            <tr>
+              <td style="color:#4fe300; font-size: 25px; padding-top: 10px;">
+                Dear ${email.split("@")[0]},
+              </td>
+            </tr>
+
+            <!-- Main Message -->
+            <tr>                                                                                                                    <td style="color:#1e324b; font-size: 16px; padding: 15px; line-height: 1.5; text-align: left;">
+                The time to get it done is here – not just that, but by <b style="color:#00ff00;">professional</b> han
+ds in web and app development.
+                Our robust team of developers fast-track the build process to deliver apps that are
+                <b style="color:#00ff00">scalable, performant, and accessible</b> across devices.
+                All these at affordable prices.<br><br>
+                Click the button below to get it done today!
+              </td>
+            </tr>
+
+            <!-- Button -->
+            <tr>                                                                                                                    <td align="center" style="padding: 20px 0;">
+                <a href="${verificationLink}" style="background-color: #4fe300; color: black; text-decoration:
+ none; font-size: 16px; padding: 10px 20px; border-radius: 20px; display: inline-block;">
+                  Verify my email
+                </a>
+              </td>
+            </tr>
+
+            <!-- Footer -->
+            <tr>
+              <td style="color: gray; font-size: 10px; padding-top: 10px;">
+                This email was sent from <b>BytanceTech</b> &copy;2025
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>`
+
+
+
+})}
+catch(error){
+res.json({msgErr:`failed to signup due to ${error}`})}});
+
+
+
+
 
 server.listen(PORT, () => {
   console.log(`My App is currently running at port: ${PORT}`);
