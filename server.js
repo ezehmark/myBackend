@@ -144,7 +144,7 @@ socket.on("close", ()=>socket.close());
 });
 
 const mongooseSchema = new Mongoose.Schema({
-	verificationToken:{type:String},
+	token:{type:String},
 email:{type:String},
 name:{type:String},
 isVerified:{type:Boolean,default:false},
@@ -159,6 +159,7 @@ if(existUser){
 res.json({msg:"You are now registered",redirectLink:"home"});
 	exitUser.isVerified=true;
 	await existUser.save();
+	res.redirect("https://bitbanker.netlify.app/home?verified=true")
 }
 	else{res.json({msg:"invalid or expired token access"})}}
 catch(error){res.json({msgErr:`Failed due to ${error}`})}
