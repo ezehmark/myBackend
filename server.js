@@ -151,7 +151,7 @@ isVerified:{type:Boolean,default:false},
 });
 const Bitbanker_User = Mongoose.model("Bitbanker_User",mongooseSchema);
 
-myApp.get("verify/:token", async(req,res)=>{
+myApp.get("/verify/:token", async(req,res)=>{
 try{
 	const userToken = req.params.token;
 	const existUser = await Bitbanker_User.findOne({token:userToken});
@@ -171,7 +171,7 @@ catch(error){res.json({msgErr:`Failed due to ${error}`})}
 myApp.post("/postAndVerify", async(req,res)=>{
 try{const {email,name}=req.body;
 const token = uuidv4();
-const existedUser = Bitbanker_User.find({email});
+const existedUser = await Bitbanker_User.findOne({email});
 	if(existedUser){res.json({msg:"You have registered before"})}
 const verificationLink = `https://mybackend-oftz.onrender.com/verify/${token}`;
 const newUser = new Bitbanker_User({email,name,token,isVerified:false});
