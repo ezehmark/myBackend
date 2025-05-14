@@ -158,8 +158,7 @@ try{
 	const userToken = req.params.token;
 	const existUser = await Bitbanker_User.findOne({token:userToken});
 if(existUser){
-res.json({msg:"You are now registered",redirectLink:"home"});
-	exitUser.isVerified=true;
+	existUser.isVerified=true;
 	await existUser.save();
 	res.redirect("https://bitbanker.netlify.app/home?verified=true")
 }
@@ -174,7 +173,7 @@ myApp.post("/postAndVerify", async(req,res)=>{
 try{const {email,name}=req.body;
 const token = uuidv4();
 const existedUser = await Bitbanker_User.findOne({email});
-	if(existedUser){res.json({msg:"You have registered before"})}
+	if(existedUser){return res.json({msg:"You have registered before"})}
 const verificationLink = `https://mybackend-oftz.onrender.com/verify/${token}`;
 const newUser = new Bitbanker_User({email,name,token,isVerified:false});
 
