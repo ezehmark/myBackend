@@ -152,7 +152,7 @@ const mongooseSchema = new Mongoose.Schema({
 });
 const Bitbanker_User = Mongoose.model("Bitbanker_User", mongooseSchema);
 
-const brevoTransporter = await myNodeMailer.createTransport({
+const brevoTransporter = myNodeMailer.createTransport({
   host: "smtp-relay.brevo.com",
   port: 587,
   auth: {
