@@ -22,7 +22,9 @@ const resend = new Resend("re_9XM2FoGB_MykVFypWBQDC9tgwiQ7vSzk5");
 myApp.use(myCors());
 myApp.use(myExpress.json());
 
+const mongUrl =  "mongodb+srv://ezehmark1:MarkMongodb5050@cluster0.g2cxv.mongodb.net/mydb?retryWrites=true&w=majority"
 
+Mongoose.connect(mongUrl);
 var chats = [];
 
 const myTransporter = myNodeMailer.createTransport({
