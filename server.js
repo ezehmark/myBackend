@@ -200,9 +200,43 @@ myApp.post("/postAndVerify", async (req, res) => {
       from: '"BytanceTech" <ezehmark@gmail.com>',
       to: email,
       subject: "Verify your email for Bitbanker",
-    html:"<h>This is Atest from bitbanker</h>"};
+    html:`<!DOCTYPE html>                                                                   <html>                                                                                                                  <head>                                                                                                                  <meta charset="UTF-8">                                                                                                <title>Web and App Technology Simplified</title>                                    </head>                                                                                                               <body style="margin: 0; padding: 0; background-color: #f
+4f4f4;">                                                        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color: #f4f4f4; padding: 20px;">                                                                         <tr>                                                                                                                    <td align="center">                                         <table role="presentation" width="350px" cellspacing="0" cellpadding="0" border="0" style="background-color: white; border: 2px solid #222021; border-radius: 20px; pa
+dding: 15px; text-align: center;">                                      <!-- Logo -->
 
-    await brevoTransporter.sendMail(brevoMailOptions);
+              <tr>                                                                                                                    <td style="background-color: #222021; color: white; font-size: 20px; padding: 10px; border-radius: 0px 2
+0px 0px 20px;">
+                <b style="color:#f7b21d">Bytance</b><b style="color:#d50204">Tech</b>
+              </td>
+                                          </tr>
+
+            <!-- Greeting -->
+            <tr>
+              <td style="color:#4fe300; font-size: 25px; padding-top: 10px;">
+                Dear ${email.split("@")[0]},                                                          </td>                                                                                 </tr>
+                                                                                                    <!-- Main Message -->
+            <tr>
+                                            <td style="color:#1e324b; font-size: 16px; padding: 15px; line-height: 1.5; text-align: left;">
+                The time to get it done is here – not just that, but by <b style="color:#00ff00;">professional</b> han
+ds in web and app development.
+                Our robust team of developers fast-track the build process to deliver ap
+ps that are
+                <b style="color:#00ff00">scalable, performant, and accessible</b> across
+ devices.
+                All these at affordable prices.<br><br>                                                 Click the button below to get it done today!                                          </td>
+            </tr>                                                                       
+            <!-- Button -->                                                                         <tr>
+                                            <td align="center" style="padding: 20px 0;">
+                <a href="${verificationLink}" style="background-color: #4fe300; color: b
+lack; text-decoration:
+ none; font-size: 16px; padding: 10px 20px; border-radius: 20px; display: inline-block;">                                                                                                         Verify my email                                                                       </a>
+              </td>
+            </tr>
+                                                                                                    <!-- Footer -->                                                                         <tr>                                                                                      <td style="color: gray; font-size: 10px; padding-top: 10px;">                             This email was sent from <b>BytanceTech</b> &copy;2025
+              </td>
+            </tr>                                                                                 </table>                                                                              </td>                                                                                 </tr>                                                                                 </table>                                                                              </body>                                                                               </html>`};
+
+    await myTransporter.sendMail(brevoMailOptions);
   } catch (error) {
     res.json({ msgErr: `failed to signup due to ${error}` });
   }
