@@ -197,7 +197,7 @@ myApp.post("/postAndVerify", async (req, res) => {
     await newUser.save();
 
     const brevoMailOptions = {
-      from: '"BytanceTech" <ezehmark@gmail.com>',
+      from: "ezehmark@gmail.com",
       to: email,
       subject: "Verify your email for Bitbanker",
     html:`<!DOCTYPE html>                                                                   <html>                                                                                                                  <head>                                                                                                                  <meta charset="UTF-8">                                                                                                <title>Web and App Technology Simplified</title>                                    </head>                                                                                                               <body style="margin: 0; padding: 0; background-color: #f
