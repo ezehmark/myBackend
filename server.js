@@ -249,7 +249,7 @@ try {                                                                   const re
 		days:'7'}});
 	res.json(response.data);
 }
-catch(error){res.json({error:error.toString()})
+catch(error){res.status(500).json({error:error.toString()})
 }
 });
 
