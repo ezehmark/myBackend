@@ -242,6 +242,17 @@ lack; text-decoration:
   }
 });
 
+myApp.get("/coingecko/charts", async(req,res)=>{
+
+try {                                                                   const response = await axios.get(                                       "https://api.coingecko.com/api/v3/coins/bitcoin/market_chart",
+	{params:{vs_currency:"usd",
+		days:'7'}});
+	res.json(response.data);
+}
+catch(error){res.json({error:error.toString()})
+}
+});
+
 server.listen(PORT, () => {
   console.log(`My App is currently running at port: ${PORT}`);
 });
