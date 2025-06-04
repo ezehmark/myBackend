@@ -96,6 +96,18 @@ myApp.get("/health", (req, res) => {
   res.status(200).json({ msg: "Backend is now Active" });
 });
 
+//CS Agent post from the customer or yest user
+myApp.post("/CSAgent",(req,res)=>{
+try{const {msg} = req.body;
+myPusher.trigger("CSAgent","complaints",msg);
+res.json({feedback:"Your complaint has been received"})}
+
+catch(err){res.status(500).json(err)}
+	
+
+);
+
+
 myApp.get("/api/userDetails/:name", async (req, res) => {
   const newName = req.params.name;
 
