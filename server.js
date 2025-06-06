@@ -81,11 +81,11 @@ const myPusher = new Pusher({
   useTLS: true,
 });
 
-myApp.post("/chats", (req, res) => {
+myApp.post("/chats", async(req, res) => {
   try {
     const { myChats } = req.body;
     chats = [...chats, myChats];
-    myPusher.trigger("chat-channel", "chatance", myChats);
+    await myPusher.trigger("chat-channel", "chatance", myChats);
     res.status(200).json({ msg: "Chat Sent" });
   } catch (err) {
     res.json({ errMsg: err.message });
@@ -96,10 +96,9 @@ myApp.get("/health", (req, res) => {
   res.status(200).json({ msg: "Backend is now Active" });
 });
 
-//CS Agent post from the customer or yest user
-myApp.post("/CSAgent",(req,res)=>{
-try{const {msg} = req.body;
-myPusher.trigger("CSAgent","complaints",msg);
+myApp.post("/CSAgent",async(req,res)=>{
+try{const msgArray = req.body;
+await myPusher.trigger("CSAgent","complaints",msgArray);
 res.json({feedback:"Your complaint has been received"})
 }
 
