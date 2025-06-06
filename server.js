@@ -95,10 +95,20 @@ myApp.post("/chats", async(req, res) => {
 myApp.get("/health", (req, res) => {
   res.status(200).json({ msg: "Backend is now Active" });
 });
+//CS Agent messages handling
 
+function sendComplaints(data){
+const message = JSON.stringify(data);
+
+myWs.clients.forEach((client)=>{
+if(client.readyState === WebSocket.OPEN){
+client.send(message)}});
+
+}
 myApp.post("/CSAgent",async(req,res)=>{
 try{const msgArray = req.body;
 await myPusher.trigger("CSAgent","complaints",msgArray);
+	sendComplaints(msgArray);
 res.json({feedback:"Your complaint has been received"})
 }
 
@@ -106,6 +116,7 @@ catch(err){res.status(500).json(err)}
 }	
 
 );
+
 
 
 myApp.get("/api/userDetails/:name", async (req, res) => {
