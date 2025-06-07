@@ -95,27 +95,35 @@ myApp.post("/chats", async(req, res) => {
 myApp.get("/health", (req, res) => {
   res.status(200).json({ msg: "Backend is now Active" });
 });
+
+
+//Geting exat date and time
+
+
+function getDateTime(){
+        const date = new Date();
+        const months = [                                                                "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December"
+  ];
+const thisMonth = months[date.getMonth()];
+const thisDay = date.getDate();                                                         const thisHour = date.getHours();
+  const thisMinute = date.getMinutes().toString().padStart(2,"0");
+  const meridian = thisHour >=12?"pm":"am";
+                                                                                          let hour = thisHour % 12;                                                               hour = hour?hour:12;
+  return`${thisDay} ${thisMonth}, ${hour}:${thisMinute} ${meridian}`
+                                                                      }
+const dateNow = getDateTime();
 //CS Agent messages handling
-//
+
 const io = new Server(server,{
 	cors:{origin:"*",
 methods:["POST","GET"]}});
 
-function sendComplaints(data){
-const message = JSON.stringify(data);
-
-
-
-myWs.clients.forEach((client)=>{
-if(client.readyState === WebSocket.OPEN){
-client.send(message)}});
-
-}
 
 io.on("connection",(socket)=>console.log("socket connected",socket.id));
 myApp.post("/CSAgent",async(req,res)=>{
 try{const msgArray = req.body;
-await myPusher.trigger("CSAgent","complaints",msgArray);
+await myPusher.trigger("CSAgent","complaints",[...msgArray,{date:dateNow}]);
 	io.emit("complaints",msgArray);
 res.json({feedback:"Your complaint has been received"})
 }
