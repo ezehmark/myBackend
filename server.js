@@ -124,7 +124,7 @@ io.on("connection",(socket)=>console.log("socket connected",socket.id));
 myApp.post("/CSAgent",async(req,res)=>{
 try{const msgArray = req.body;
 await myPusher.trigger("CSAgent","complaints",[...msgArray,{date:dateNow}]);
-	io.emit("complaints",msgArray);
+	io.emit("complaints",[...msgArray,{date:dateNow}]);
 res.json({feedback:"Your complaint has been received"})
 }
 
