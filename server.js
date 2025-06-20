@@ -19,6 +19,26 @@ const myWs = new WebSocket.Server({ server });
 const { Resend } = require("resend");
 const resend = new Resend("re_9XM2FoGB_MykVFypWBQDC9tgwiQ7vSzk5");
 
+//Firebase imports and setUps:
+
+const { initializeApp } = require("firebase/app");
+const { getFirestore } = require("firebase/firestore");
+
+// My Firebase configuration (for markrichly1@gmail.com)
+const firebaseConfig = {
+apiKey: "AIzaSyClJa9jKOfp8fo1Cl1NKLMlBqCgrRyEpmc",
+  authDomain: "blocavax.firebaseapp.com",
+  projectId: "blocavax",
+  storageBucket: "blocavax.appspot.com",
+  messagingSenderId: "461681404700",
+  appId: "1:461681404700:web:867a3ff6a068b5bf7028d9",
+  measurementId: "G-E70XLXXF46"};
+
+// Initialize Firebase and Analytics
+const app = initializeApp(firebaseConfig);
+
+const db = getFirestore(app);
+
 myApp.use(myCors());
 myApp.use(myExpress.json());
 
@@ -97,7 +117,7 @@ myApp.get("/health", (req, res) => {
 });
 
 
-//Geting exat date and time
+//Geting exact date and time
 
 
 function getDateTime(){
@@ -123,8 +143,12 @@ methods:["POST","GET"]}});
 io.on("connection",(socket)=>console.log("socket connected",socket.id));
 myApp.post("/CSAgent",async(req,res)=>{
 try{const msgArray = req.body;
-await myPusher.trigger("CSAgent","complaints",[...msgArray,{date:dateNow}]);
-	io.emit("complaints",[...msgArray,{date:dateNow}]);
+	const msgArrayWithTime = msgArray.map(item=>({...item,date:getDateTime()}));
+	io.emit("complaints",msgArrayWithTime);
+	await setDoc(doc(db,'CSAgents',uuidv4()),
+		{msg:msgArrayWithTime[0].msg,
+			name:msgArrayWithTime[0].name,
+		time:msgArrayWithTime[0].date});
 res.json({feedback:"Your complaint has been received"})
 }
 
