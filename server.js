@@ -21,7 +21,6 @@ const resend = new Resend("re_9XM2FoGB_MykVFypWBQDC9tgwiQ7vSzk5");
 
 //Firebase imports and setUps:
 
-const { initializeApp } = require("firebase/app");
 const { getFirestore } = require("firebase/firestore");
 
 // My Firebase configuration (for markrichly1@gmail.com)
