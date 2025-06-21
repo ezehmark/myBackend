@@ -21,7 +21,6 @@ const resend = new Resend("re_9XM2FoGB_MykVFypWBQDC9tgwiQ7vSzk5");
 
 //Firebase Admin imports and setUps:
 
-
 const db = require("./admin.js");
 
 myApp.use(myCors());
@@ -86,7 +85,7 @@ const myPusher = new Pusher({
   useTLS: true,
 });
 
-myApp.post("/chats", async(req, res) => {
+myApp.post("/chats", async (req, res) => {
   try {
     const { myChats } = req.body;
     chats = [...chats, myChats];
@@ -101,49 +100,76 @@ myApp.get("/health", (req, res) => {
   res.status(200).json({ msg: "Backend is now Active" });
 });
 
-
 //Geting exact date and time
 
-
-function getDateTime(){
-        const date = new Date();
-        const months = [                                                                "January", "February", "March", "April", "May", "June",
-    "July", "August", "September", "October", "November", "December"
+function getDateTime() {
+  const date = new Date();
+  const months = [
+    "January",
+    "February",
+    "March",
+    "April",
+    "May",
+    "June",
+    "July",
+    "August",
+    "September",
+    "October",
+    "November",
+    "December",
   ];
-const thisMonth = months[date.getMonth()];
-const thisDay = date.getDate();                                                         const thisHour = date.getHours();
-  const thisMinute = date.getMinutes().toString().padStart(2,"0");
-  const meridian = thisHour >=12?"pm":"am";
-                                                                                          let hour = thisHour % 12;                                                               hour = hour?hour:12;
-  return`${thisDay} ${thisMonth}, ${hour}:${thisMinute} ${meridian}`
-                                                                      }
-const dateNow = getDateTime();
+  const thisMonth = months[date.getMonth()];
+  const thisDay = date.getDate();
+  const thisHour = date.getHours();
+  const thisMinute = date.getMinutes().toString().padStart(2, "0");
+  const meridian = thisHour >= 12 ? "pm" : "am";
+  let hour = thisHour % 12;
+  hour = hour ? hour : 12;
+  return `${thisDay} ${thisMonth}, ${hour}:${thisMinute} ${meridian}`;
+}
 //CS Agent messages handling
 
-const io = new Server(server,{
-	cors:{origin:"*",
-methods:["POST","GET"]}});
+const io = new Server(server, {
+  cors: { origin: "*", methods: ["POST", "GET"] },
+});
 
+io.on("connection", (socket) => console.log("socket connected", socket.id));
+myApp.post("/CSAgent", async (req, res) => {
+  try {
+//Getting current time:
+const date = new Date();                                        const months = [
+    "January",                                                      "February",
+    "March",                                                        "April",                                                        "May",                                                          "June",
+    "July",                                                         "August",                                                       "September",                                                    "October",                                                      "November",                                                     "December",                                                   ];                                                              const thisMonth = months[date.getMonth()];                      const thisDay = date.getDate();                                 const thisHour = date.getHours();                               const thisMinute = date.getMinutes().toString().padStart(2, "0");
+  const meridian = thisHour >= 12 ? "pm" : "am";
+  let hour = thisHour % 12;                                       hour = hour ? hour : 12;
+  const dateTime = `${thisDay} ${thisMonth}, ${hour}:${thisMinute} ${merid
+ian}`;
 
-io.on("connection",(socket)=>console.log("socket connected",socket.id));
-myApp.post("/CSAgent",async(req,res)=>{
-try{const msgArray = req.body;
-	const msgArrayWithTime = msgArray.map(item=>({...item,date:getDateTime()}));
-	io.emit("complaints",msgArrayWithTime);
-	console.log(msgArrayWithTime[0].msg, msgArrayWithTime[0].date,msgArrayWithTime[0].name);
-	await db.collection("Cs Agents").doc(uuidv4()).set(
-		{msg:msgArrayWithTime[0]?.msg,
-			name:msgArrayWithTime[0]?.name,
-		time:msgArrayWithTime[0]?.date});
-res.json({feedback:"Your complaint has been received"})
-}
-
-catch(err){res.status(500).json(err)}
-}	
-
-);
-
-
+    const msgArray = req.body;
+    const msgArrayWithTime = msgArray.map((item) => ({
+      ...item,
+      date: dateTime,
+    }));
+    io.emit("complaints", msgArrayWithTime);
+    console.log(
+      msgArrayWithTime[0].msg,
+      msgArrayWithTime[0].date,
+      msgArrayWithTime[0].name,
+    );
+    await db
+      .collection("Cs_Agents")
+      .doc(uuidv4())
+      .set({
+        msg: msgArrayWithTime[0]?.msg,
+        name: msgArrayWithTime[0]?.name,
+        time: msgArrayWithTime[0]?.date,
+      });
+    res.json({ feedback: "Your complaint has been received" });
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
 
 myApp.get("/api/userDetails/:name", async (req, res) => {
   const newName = req.params.name;
@@ -204,7 +230,7 @@ const Bitbanker_User = Mongoose.model("Bitbanker_User", mongooseSchema);
 const brevoTransporter = myNodeMailer.createTransport({
   host: "smtp-relay.brevo.com",
   port: 587,
-secure:false,
+  secure: false,
   auth: {
     user: "8d034f001@smtp-brevo.com",
     pass: "mCyqRGr8n1wd3OJQ",
@@ -249,7 +275,7 @@ myApp.post("/postAndVerify", async (req, res) => {
       from: "ezehmark@gmail.com",
       to: email,
       subject: "Verify your email for Bitbanker",
-    html:`<!DOCTYPE html>                                                                   <html>                                                                                                                  <head>                                                                                                                  <meta charset="UTF-8">                                                                                                <title>Web and App Technology Simplified</title>                                    </head>                                                                                                               <body style="margin: 0; padding: 0; background-color: #f
+      html: `<!DOCTYPE html>                                                                   <html>                                                                                                                  <head>                                                                                                                  <meta charset="UTF-8">                                                                                                <title>Web and App Technology Simplified</title>                                    </head>                                                                                                               <body style="margin: 0; padding: 0; background-color: #f
 4f4f4;">                                                        <table role="presentation" width="100%" cellspacing="0" cellpadding="0" border="0" style="background-color: #f4f4f4; padding: 20px;">                                                                         <tr>                                                                                                                    <td align="center">                                         <table role="presentation" width="350px" cellspacing="0" cellpadding="0" border="0" style="background-color: white; border: 2px solid #222021; border-radius: 20px; pa
 dding: 15px; text-align: center;">                                      <!-- Logo -->
 
@@ -283,7 +309,8 @@ lack; text-decoration:
             </tr>
                                                                                                     <!-- Footer -->                                                                         <tr>                                                                                      <td style="color: gray; font-size: 10px; padding-top: 10px;">                             This email was sent from <b>BytanceTech</b> &copy;2025
               </td>
-            </tr>                                                                                 </table>                                                                              </td>                                                                                 </tr>                                                                                 </table>                                                                              </body>                                                                               </html>`};
+            </tr>                                                                                 </table>                                                                              </td>                                                                                 </tr>                                                                                 </table>                                                                              </body>                                                                               </html>`,
+    };
 
     await myTransporter.sendMail(brevoMailOptions);
   } catch (error) {
@@ -291,15 +318,16 @@ lack; text-decoration:
   }
 });
 
-myApp.get("/coingecko/charts", async(req,res)=>{
-
-try {                                                                   const response = await axios.get(                                       "https://api.coingecko.com/api/v3/coins/bitcoin/market_chart",
-	{params:{vs_currency:"usd",
-		days:'7'}});
-	res.json(response.data);
-}
-catch(error){res.status(500).json({error:error.toString()})
-}
+myApp.get("/coingecko/charts", async (req, res) => {
+  try {
+    const response = await axios.get(
+      "https://api.coingecko.com/api/v3/coins/bitcoin/market_chart",
+      { params: { vs_currency: "usd", days: "7" } },
+    );
+    res.json(response.data);
+  } catch (error) {
+    res.status(500).json({ error: error.toString() });
+  }
 });
 
 server.listen(PORT, () => {
