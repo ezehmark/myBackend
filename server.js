@@ -143,8 +143,7 @@ const date = new Date();                                        const months = [
     "July",                                                         "August",                                                       "September",                                                    "October",                                                      "November",                                                     "December",                                                   ];                                                              const thisMonth = months[date.getMonth()];                      const thisDay = date.getDate();                                 const thisHour = date.getHours();                               const thisMinute = date.getMinutes().toString().padStart(2, "0");
   const meridian = thisHour >= 12 ? "pm" : "am";
   let hour = thisHour % 12;                                       hour = hour ? hour : 12;
-  const dateTime = `${thisDay} ${thisMonth}, ${hour}:${thisMinute} ${merid
-ian}`;
+  const dateTime = `${thisDay} ${thisMonth}, ${hour}:${thisMinute} ${meridian}`;
 
     const msgArray = req.body;
     const msgArrayWithTime = msgArray.map((item) => ({
