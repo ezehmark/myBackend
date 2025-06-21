@@ -943,7 +943,7 @@ fast-deep-equal@^2.0.1:
   resolved "https://registry.yarnpkg.com/fast-deep-equal/-/fast-deep-equal-2.0.1.tgz#7b05218ddf9667bf7f370bf7fdb2cb15fdd0aa49"
   integrity sha512-bCK/2Z4zLidyB4ReuIsvALH6w31YfAQDmXMqMx6FyfHqvBxtjC0eRumeSu4Bs3XtXwpyIywtSTrVT99BxY1f9w==
 
-faye-websocket@0.11.4, faye-websocket@>=0.6.0:
+faye-websocket@0.11.4:
   version "0.11.4"
   resolved "https://registry.yarnpkg.com/faye-websocket/-/faye-websocket-0.11.4.tgz#7f0d9275cfdd86a1c963dc8b65fcc451edcbb1da"
   integrity sha512-CzbClwlXAuiRQAlUyfqPgvPoNKTckTPGfwZV4ZdAhVcP2lh9KUxJg2b5GkE7XbjKQ3YJnQ9z6D9ntLAlB+tP8g==
@@ -962,11 +962,6 @@ finalhandler@1.3.1:
     parseurl "~1.3.3"
     statuses "2.0.1"
     unpipe "~1.0.0"
-
-firebase-token-generator@^2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/firebase-token-generator/-/firebase-token-generator-2.0.0.tgz#9767d759ec13abdc99ba115fd5ea99d8b93d1206"
-  integrity sha512-EX/Rw6C0NLF6StuszW9Pn4zGUU8dw0UdHY6u8zP5t/CsbYRwWVh0CwN6INFE5U4IizZtgqbWQhcAQNkBtNkyfQ==
 
 firebase@^11.9.1:
   version "11.9.1"
@@ -1001,22 +996,6 @@ firebase@^11.9.1:
     "@firebase/storage" "0.13.13"
     "@firebase/storage-compat" "0.3.23"
     "@firebase/util" "1.12.0"
-
-firebase@^2.1.2:
-  version "2.4.2"
-  resolved "https://registry.yarnpkg.com/firebase/-/firebase-2.4.2.tgz#4e1119ec0396ca561d8a7acbff1630feac6c0a31"
-  integrity sha512-+OA3MChRNTgKmC4Kq+Mnp41jteGSTyRxc6P7YVqk/bHUZK1EyxT0uNqLZWfbncjYy5MAKYUq+at9b2+8MlXs4w==
-  dependencies:
-    faye-websocket ">=0.6.0"
-
-firestore@^1.1.6:
-  version "1.1.6"
-  resolved "https://registry.yarnpkg.com/firestore/-/firestore-1.1.6.tgz#73284bce9fe9b08bdad6c18278d25b696e123cc2"
-  integrity sha512-RW2IPatMS7XUFtecjN5gxAdX1badHwaoYgplFDNLeN9ZjapOjgRv9Voa3P9ffRT0/lxBUMOFNkLxGHYWQBeaZA==
-  dependencies:
-    firebase "^2.1.2"
-    firebase-token-generator "^2.0.0"
-    lodash "^3.1.0"
 
 follow-redirects@^1.15.6:
   version "1.15.9"
@@ -1191,11 +1170,6 @@ lodash.camelcase@^4.3.0:
   version "4.3.0"
   resolved "https://registry.yarnpkg.com/lodash.camelcase/-/lodash.camelcase-4.3.0.tgz#b28aa6288a2b9fc651035c7711f65ab6190331a6"
   integrity sha512-TwuEnCnxbc3rAvhf/LbG7tJUDzhqXyFnv3dtzLOPgCG/hODL7WFnsbwktkD7yUV0RrreP/l1PALq/YSg6VvjlA==
-
-lodash@^3.1.0:
-  version "3.10.1"
-  resolved "https://registry.yarnpkg.com/lodash/-/lodash-3.10.1.tgz#5bf45e8e49ba4189e17d482789dfd15bd140b7b6"
-  integrity sha512-9mDDwqVIma6OZX79ZlDACZl8sBm0TEnkf99zV3iMA4GzkIT/9hiqP5mY0HoT1iNLCrKc/R1HByV+yJfRWVJryQ==
 
 long@^5.0.0:
   version "5.3.2"
