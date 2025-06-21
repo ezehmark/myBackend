@@ -19,24 +19,10 @@ const myWs = new WebSocket.Server({ server });
 const { Resend } = require("resend");
 const resend = new Resend("re_9XM2FoGB_MykVFypWBQDC9tgwiQ7vSzk5");
 
-//Firebase imports and setUps:
-const{initializeApp}= require("firebase-admin/app");
-const { getFirestore } = require("firebase-admin/firestore");
+//Firebase Admin imports and setUps:
 
-// My Firebase configuration (for markrichly1@gmail.com)
-const firebaseConfig = {
-apiKey: "AIzaSyClJa9jKOfp8fo1Cl1NKLMlBqCgrRyEpmc",
-  authDomain: "blocavax.firebaseapp.com",
-  projectId: "blocavax",
-  storageBucket: "blocavax.appspot.com",
-  messagingSenderId: "461681404700",
-  appId: "1:461681404700:web:867a3ff6a068b5bf7028d9",
-  measurementId: "G-E70XLXXF46"};
 
-// Initialize Firebase and Analytics
-const app = initializeApp(firebaseConfig);
-
-const db = getFirestore(app);
+const db = require("./admin.js");
 
 myApp.use(myCors());
 myApp.use(myExpress.json());
@@ -145,7 +131,7 @@ try{const msgArray = req.body;
 	const msgArrayWithTime = msgArray.map(item=>({...item,date:getDateTime()}));
 	io.emit("complaints",msgArrayWithTime);
 	console.log(msgArrayWithTime[0].msg, msgArrayWithTime[0].date,msgArrayWithTime[0].name);
-	await setDoc(doc(db,'CSAgents',uuidv4()),
+	await db.collection("Cs Agents").doc(uuidv4()).set(
 		{msg:msgArrayWithTime[0]?.msg,
 			name:msgArrayWithTime[0]?.name,
 		time:msgArrayWithTime[0]?.date});
