@@ -146,9 +146,9 @@ try{const msgArray = req.body;
 	const msgArrayWithTime = msgArray.map(item=>({...item,date:getDateTime()}));
 	io.emit("complaints",msgArrayWithTime);
 	await setDoc(doc(db,'CSAgents',uuidv4()),
-		{msg:msgArrayWithTime[0].msg,
-			name:msgArrayWithTime[0].name,
-		time:msgArrayWithTime[0].date});
+		{msg:msgArrayWithTime[0]?.msg,
+			name:msgArrayWithTime[0]?.name,
+		time:msgArrayWithTime[0]?.date});
 res.json({feedback:"Your complaint has been received"})
 }
 
