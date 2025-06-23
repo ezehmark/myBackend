@@ -5,7 +5,8 @@ let db;
 
 try {
     console.log("Attempting to initialize Firebase Admin SDK using environment variable...");
-    const serviceAccountJson = process.env.FIREBASE_SERVICE_ACCOUNT_JSON;
+    const serviceAccountJson = process.env.serviceAccountString;
+
 
     if (!serviceAccountJson) {
         throw new Error("FIREBASE_SERVICE_ACCOUNT_JSON environment variable is not set!");
