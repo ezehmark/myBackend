@@ -136,14 +136,30 @@ const io = new Server(server, {
 io.on("connection", (socket) => console.log("socket connected", socket.id));
 myApp.post("/CSAgent", async (req, res) => {
   try {
-//Getting current time:
-const date = new Date();                                        const months = [
-    "January",                                                      "February",
-    "March",                                                        "April",                                                        "May",                                                          "June",
-    "July",                                                         "August",                                                       "September",                                                    "October",                                                      "November",                                                     "December",                                                   ];                                                              const thisMonth = months[date.getMonth()];                      const thisDay = date.getDate();                                 const thisHour = date.getHours();                               const thisMinute = date.getMinutes().toString().padStart(2, "0");
-  const meridian = thisHour >= 12 ? "pm" : "am";
-  let hour = thisHour % 12;                                       hour = hour ? hour : 12;
-  const dateTime = `${thisDay} ${thisMonth}, ${hour}:${thisMinute} ${meridian}`;
+    //Getting current time:
+    const date = new Date();
+    const months = [
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
+    ];
+    const thisMonth = months[date.getMonth()];
+    const thisDay = date.getDate();
+    const thisHour = date.getHours();
+    const thisMinute = date.getMinutes().toString().padStart(2, "0");
+    const meridian = thisHour >= 12 ? "pm" : "am";
+    let hour = thisHour % 12;
+    hour = hour ? hour : 12;
+    const dateTime = `${thisDay} ${thisMonth}, ${hour}:${thisMinute} ${meridian}`;
 
     const msgArray = req.body;
     const msgArrayWithTime = msgArray.map((item) => ({
@@ -156,19 +172,16 @@ const date = new Date();                                        const months = [
       msgArrayWithTime[0].date,
       msgArrayWithTime[0].name,
     );
-	  console.log("123457, uuidv4 aint working");
-	  res.json(uuidv4());
-    await db
-      .collection("Cs_Agents")
-      .doc(uuidv4())
-      .set({
-        msg: msgArrayWithTime[0]?.msg,
-        name: msgArrayWithTime[0]?.name,
-        time: msgArrayWithTime[0]?.date,
-      });
+    console.log("123457, uuidv4 aint working?",uuidv4());
+    res.json(uuidv4());
+    await db.collection("Cs_Agents").doc(uuidv4()).set({
+      msg: msgArrayWithTime[0]?.msg,
+      name: msgArrayWithTime[0]?.name,
+      time: msgArrayWithTime[0]?.date,
+    });
     res.json({ feedback: "Your complaint has been received" });
   } catch (err) {
-	  console.error("Setting doc failed:",err);
+    console.error("Setting doc failed:", err);
     res.status(500).json(err);
   }
 });
