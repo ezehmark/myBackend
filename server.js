@@ -156,6 +156,8 @@ const date = new Date();                                        const months = [
       msgArrayWithTime[0].date,
       msgArrayWithTime[0].name,
     );
+	  console.log(uuidv4());
+	  res.json(uuidv4());
     await db
       .collection("Cs_Agents")
       .doc(uuidv4())
