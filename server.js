@@ -173,13 +173,12 @@ myApp.post("/CSAgent", async (req, res) => {
       msgArrayWithTime[0].name,
     );
     console.log("123457, uuidv4 aint working?",uuidv4());
-    res.json(uuidv4());
     await db.collection("Cs_Agents").doc(uuidv4()).set({
       msg: msgArrayWithTime[0]?.msg,
       name: msgArrayWithTime[0]?.name,
       time: msgArrayWithTime[0]?.date,
     });
-    res.json({ feedback: "Your complaint has been received" });
+    res.json({ feedback: `Your complaint has been received, ${uuidv4()}` });
   } catch (err) {
     console.error("Setting doc failed:", err);
     res.status(500).json(err);
