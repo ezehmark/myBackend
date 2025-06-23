@@ -166,6 +166,7 @@ const date = new Date();                                        const months = [
       });
     res.json({ feedback: "Your complaint has been received" });
   } catch (err) {
+	  console.error("Setting doc failed:",err);
     res.status(500).json(err);
   }
 });
