@@ -4,20 +4,19 @@ const { getFirestore } = require("firebase-admin/firestore");
 let db;
 
 try {
-  console.log("Attempting to initialize Firebase Admin SDK using service account...");
+    console.log("Attempting to initialize Firebase Admin SDK using environment variable...");
+    const serviceAccount = JSON.parse(process.env.serviceAccountString);
 
-  const serviceAccount = require("./firebaseAdmin.json");
+    initializeApp({
+        credential: cert(serviceAccount)
+    });
 
-  initializeApp({
-    credential: cert(serviceAccount),
-  });
-
-  db = getFirestore();
-  console.log("Firebase Admin SDK initialized successfully.");
+    db = getFirestore();
+    console.log("Firebase Admin SDK initialized successfully via environment variable.");
 } catch (error) {
-  console.error("🚨🚨🚨 FATAL ERROR: Firebase Admin SDK initialization failed: 🚨🚨🚨", error);
-  // This is a critical error; the app cannot proceed without a Firestore instance
-  process.exit(1);
+    console.error("🚨🚨🚨 FATAL ERROR: Firebase Admin SDK initialization failed: 🚨🚨🚨", error);
+    // This is a critical error, the app cannot proceed without auth
+    process.exit(1);
 }
 
-module.exports = db; // Export Firestore instance after successful initialization
+module.exports = db;
