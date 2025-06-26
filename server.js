@@ -17,7 +17,7 @@ const server = http.createServer(myApp);
 
 const myWs = new WebSocket.Server({ server });
 
-Firebase Admin imports and setUps:
+//Firebase Admin imports and setUps:
 
 const db = require("./admin.js");
 
