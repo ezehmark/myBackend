@@ -143,7 +143,7 @@ myApp.post("/CSAgent", async (req, res) => {
       name: msgArrayWithTime[0]?.name,
       time: msgArrayWithTime[0]?.date,
     });
-    res.json({ feedback: `Your complaint has been received, \n This is your ticket-ID: ${uuidv4()}` });
+    res.json({ feedback: `Your complaint has been received, <br> This is your ticket-ID: ${uuidv4()}` });
   } catch (err) {
     console.error("Setting doc failed:", err);
     res.status(500).json(err);
