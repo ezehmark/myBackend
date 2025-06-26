@@ -16,20 +16,19 @@ const { v4: uuidv4 } = require("uuid");
 const server = http.createServer(myApp);
 
 const myWs = new WebSocket.Server({ server });
-const { Resend } = require("resend");
-const resend = new Resend("re_9XM2FoGB_MykVFypWBQDC9tgwiQ7vSzk5");
 
-//Firebase Admin imports and setUps:
+Firebase Admin imports and setUps:
 
 const db = require("./admin.js");
+
 
 myApp.use(myCors());
 myApp.use(myExpress.json());
 
-const mongUrl =
+/*const mongUrl =
   "mongodb+srv://ezehmark1:MarkMongodb5050@cluster0.g2cxv.mongodb.net/mydb?retryWrites=true&w=majority";
 
-Mongoose.connect(mongUrl);
+Mongoose.connect(mongUrl);*/
 var chats = [];
 
 const myTransporter = myNodeMailer.createTransport({
@@ -76,14 +75,6 @@ var users = [
 ];
 
 var user;
-const Pusher = require("pusher");
-const myPusher = new Pusher({
-  appId: "1974555",
-  key: "9f6c0b8345c2297e09e6",
-  secret: "13f0f60338b5057aad38",
-  cluster: "eu",
-  useTLS: true,
-});
 
 myApp.post("/chats", async (req, res) => {
   try {
@@ -100,33 +91,7 @@ myApp.get("/health", (req, res) => {
   res.status(200).json({ msg: "Backend is now Active" });
 });
 
-//Geting exact date and time
 
-function getDateTime() {
-  const date = new Date();
-  const months = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
-  const thisMonth = months[date.getMonth()];
-  const thisDay = date.getDate();
-  const thisHour = date.getHours();
-  const thisMinute = date.getMinutes().toString().padStart(2, "0");
-  const meridian = thisHour >= 12 ? "pm" : "am";
-  let hour = thisHour % 12;
-  hour = hour ? hour : 12;
-  return `${thisDay} ${thisMonth}, ${hour}:${thisMinute} ${meridian}`;
-}
 //CS Agent messages handling
 
 const io = new Server(server, {
@@ -213,25 +178,6 @@ myApp.post("/api/userDetails", async (req, res) => {
   }
 });
 
-myApp.get("/prices", async (req, res) => {
-  const response = await axios.get(
-    "https://api.coingecko.com/api/v3/simple/price?ids=bitcoin,ethereum,solana&vs_currencies=usd",
-  );
-  res.json(response);
-});
-
-myWs.on("connection", (socket) => {
-  const coinCapWs = new WebSocket(
-    "wss://wss.coincap.io/prices?assets=bitcoin,ethereum,solana&apiKey=d9bbb9c22fa2553ad23fd9e95430ce31f26565427716b263fcc82b3565e90d8a",
-  );
-
-  coinCapWs.on("message", (data) => {
-    socket.send(data.toString());
-  });
-  coinCapWs.on("close", () => socket.close());
-
-  socket.on("close", () => socket.close());
-});
 
 const mongooseSchema = new Mongoose.Schema({
   token: { type: String },
