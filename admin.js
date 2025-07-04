@@ -2,7 +2,7 @@ const { initializeApp, cert } = require("firebase-admin/app");
 const { getFirestore } = require("firebase-admin/firestore");
 
 let db;
-
+const admin = require("firebase-admin");
 try {
     console.log("Attempting to initialize Firebase Admin SDK using environment variable...");
     const serviceAccount = JSON.parse(process.env.serviceAccountString);
@@ -19,4 +19,4 @@ try {
     process.exit(1);
 }
 
-module.exports = db;
+module.exports = {admin,db};

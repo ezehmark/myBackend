@@ -1,7 +1,7 @@
 require("dotenv").config();
 const myNodeMailer = require("nodemailer");
 const myExpress = require("express");
-const myApp = myExpress();
+const myApp = myExpress()
 const { createServer } = require("http");
 const { Server } = require("socket.io");
 const axios = require("axios");
@@ -14,6 +14,8 @@ const WebSocket = require("ws");
 const { v4: uuidv4 } = require("uuid");
 
 const server = http.createServer(myApp);
+
+const {sendPushNotificationToUser} = require("./sendfcm.js");
 
 const myWs = new WebSocket.Server({ server });
 
@@ -101,55 +103,59 @@ const io = new Server(server, {
 io.on("connection", (socket) => console.log("socket connected", socket.id));
 myApp.post("/CSAgent", async (req, res) => {
   try {
-    //Getting current time:
+    // Get formatted current date and time
     const date = new Date();
     const months = [
-      "January",
-      "February",
-      "March",
-      "April",
-      "May",
-      "June",
-      "July",
-      "August",
-      "September",
-      "October",
-      "November",
-      "December",
+      "January", "February", "March", "April", "May", "June",
+      "July", "August", "September", "October", "November", "December"
     ];
     const thisMonth = months[date.getMonth()];
     const thisDay = date.getDate();
     const thisHour = date.getHours();
     const thisMinute = date.getMinutes().toString().padStart(2, "0");
     const meridian = thisHour >= 12 ? "pm" : "am";
-    let hour = thisHour % 12;
-    hour = hour ? hour : 12;
+    let hour = thisHour % 12 || 12;
     const dateTime = `${thisDay} ${thisMonth}, ${hour}:${thisMinute} ${meridian}`;
 
     const msgArray = req.body;
+
     const msgArrayWithTime = msgArray.map((item) => ({
       ...item,
       date: dateTime,
     }));
+
+    // Emit to frontend clients via socket
     io.emit("complaints", msgArrayWithTime);
-    console.log(
-      msgArrayWithTime[0].msg,
-      msgArrayWithTime[0].date,
-      msgArrayWithTime[0].name,
-    );
-    console.log("123457, uuidv4 aint working?",uuidv4());
-    await db.collection("Cs_Agents").doc(uuidv4()).set({
+
+    console.log(msgArrayWithTime[0].msg, msgArrayWithTime[0].date, msgArrayWithTime[0].name);
+
+    // Send push notifications
+    const pushMessages = msgArrayWithTime.map((item) => ({
+      title: "Incoming",
+      body: item.msg,
+      userId: item.name, // change if you store FCM tokens by name
+    }));
+
+    for (const m of pushMessages) {
+      await sendPushNotificationToUser(m.title, m.body, m.userId);
+    }
+
+    // Save to Firestore
+    const ticketId = uuidv4();
+    await db.collection("Cs_Agents").doc(ticketId).set({
       msg: msgArrayWithTime[0]?.msg,
       name: msgArrayWithTime[0]?.name,
       time: msgArrayWithTime[0]?.date,
     });
-    res.json({ feedback: `Your complaint has been received, <br> This is your ticket-ID: ${uuidv4()}` });
+
+    res.json({
+      feedback: `Your complaint has been received, <br> This is your ticket-ID: ${ticketId}`,
+    });
   } catch (err) {
     console.error("Setting doc failed:", err);
-    res.status(500).json(err);
+    res.status(500).json({ error: "Server error" });
   }
 });
-
 myApp.get("/api/userDetails/:name", async (req, res) => {
   const newName = req.params.name;
 
