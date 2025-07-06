@@ -133,11 +133,11 @@ myApp.post("/CSAgent", async (req, res) => {
     const pushMessages = msgArrayWithTime.map((item) => ({
       title: "Incoming",
       body: item.msg,
-      userId: item.name, // change if you store FCM tokens by name
+      userId: item.userId, // change if you store FCM tokens by name
     }));
 
     for (const m of pushMessages) {
-      await sendPushNotificationToUser(m.title, m.body, m.userId);
+      await sendPushNotificationToUser(m.title, m.body);
     }
 
     // Save to Firestore

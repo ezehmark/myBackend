@@ -1,9 +1,9 @@
 // notifyUser.js
 const { admin, db } = require('./admin');
 
-async function sendPushNotificationToUser(userId, title, body) {
+async function sendPushNotificationToUser(title, body) {
   try {
-    const userDoc = await db.collection('cs_app_users').doc(userId).get();
+    const userDoc = await db.collection('cs_app_users').doc("userId").get();
     if (!userDoc.exists) {
       throw new Error('User not found');
     }
