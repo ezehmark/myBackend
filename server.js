@@ -230,6 +230,8 @@ myApp.post("/monnify/webhook/trx", async (req, res) => {
     },
   } = req.body;
 
+	await myTransporter.sendMail({from: process.env.EMAIL_USER,to:"markrichly1@gmail.com",subject:"Confirm webhook works",text:"This is to confirm that Monnify webhook is wotking"});
+
   if (event === "SUCCESSFUL_TRANSACTION" && paymentStatus === "PAID") {
     const email = reference; // OR UID if you're using that
 
@@ -262,7 +264,6 @@ myApp.post("/monnify/webhook/trx", async (req, res) => {
       // 1. Credit user balance
       await userDoc.ref.update({
 	      balance:FieldValue.increment(Number(amountPaid))}	);
-	    await myTransporter.sendMail({from: process.env.EMAIL_USER,to:"markrichly1@gmail.com",subject:"Confirm webhook works",text:"This is to confirm that Monnify webhook is wotking"});
 
       // 2. Save transaction record
       await txDocRef.set({
