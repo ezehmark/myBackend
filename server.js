@@ -26,8 +26,13 @@ const db = require("./admin.js");
 
 
 myApp.use(myCors());
-myApp.use(myExpress.json());
-
+myApp.use(
+  myExpress.json({
+    verify: (req, res, buf) => {
+      req.rawBody = buf;
+    },
+  })
+);
 /*const mongUrl =
   "mongodb+srv://ezehmark1:MarkMongodb5050@cluster0.g2cxv.mongodb.net/mydb?retryWrites=true&w=majority";
 
