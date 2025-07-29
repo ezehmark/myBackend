@@ -281,15 +281,6 @@ console.log("✅ Parsed Data:", {
       });
       console.log(`💰 Credited ₦${amountPaid} to user ${email} (UID: ${userId})`);
 
-      // 2. Send confirmation email
-      await myTransporter.sendMail({
-        from: process.env.EMAIL_USER,
-        to: "markrichly1@gmail.com",
-        subject: "✅ Webhook Confirmed",
-        text: "This is to confirm that Monnify webhook is working.",
-      });
-      console.log("📨 Confirmation email sent to admin");
-
       // 3. Save transaction record
       await txDocRef.set({
         amount: Number(amountPaid),
