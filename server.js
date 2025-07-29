@@ -18,6 +18,7 @@ const server = http.createServer(myApp);
 const {sendPushNotificationToUser} = require("./sendfcm.js");
 
 const myWs = new WebSocket.Server({ server });
+const { FieldValue } = require("firebase-admin/firestore");
 
 //Firebase Admin imports and setUps:
 
@@ -207,6 +208,78 @@ const storage = getStorage(app);
 export { auth, googleProvider, db, analytics,storage };`)}
 	catch(err){res.json(err)}
 });
+
+
+//BytPay Transactions WebHookfrom Monnify 
+//
+
+
+myApp.post("/monnify/webhook/trx", async (req, res) => {
+  const {
+    event,
+    eventData: {
+      paymentStatus,
+      amountPaid,
+      paymentReference,
+      product: { reference }, // assume this is user email or uid
+    },
+  } = req.body;
+
+  if (event === "SUCCESSFUL_TRANSACTION" && paymentStatus === "PAID") {
+    const email = reference; // OR UID if you're using that
+
+    try {
+      const txRef = `monnify_${paymentReference}`;
+      const userSnap = await db
+        .collection("bytpay_users")
+        .where("email", "==", email)
+        .limit(1)
+        .get();
+
+      if (userSnap.empty) {
+        return res.status(404).send("User not found");
+      }
+
+      const userDoc = userSnap.docs[0];
+      const userId = userDoc.id;
+
+      // Check if transaction already exists
+      const txDocRef = db
+        .collection("bytpay_transactions")
+        .doc(userId)
+        .collection("records")
+        .doc(txRef);
+      const txSnap = await txDocRef.get();
+      if (txSnap.exists) {
+        return res.status(200).send("Already processed");
+      }
+
+      // 1. Credit user balance
+      await userDoc.ref.update({
+	      balance:FieldValue.increment(Number(amountPaid))}	);
+
+      // 2. Save transaction record
+      await txDocRef.set({
+        amount: Number(amountPaid),
+        email,
+        type: "funding",
+        status: "Success",
+        createdAt: new Date().toISOString(),
+        reference: txRef,
+      });
+
+      return res.status(200).send("Wallet credited");
+    } catch (err) {
+      console.error("Webhook error:", err);
+      return res.status(500).send("Server error");
+    }
+  }
+
+  return res.status(400).send("Ignored event");
+});
+
+
+
 myApp.post("/api/userDetails", async (req, res) => {
   try {
     const { newPeople } = req.body;
@@ -332,6 +405,8 @@ myApp.get("/coingecko/charts", async (req, res) => {
     res.status(500).json({ error: error.toString() });
   }
 });
+
+
 
 server.listen(PORT, () => {
   console.log(`My App is currently running at port: ${PORT}`);
