@@ -224,24 +224,27 @@ myApp.post("/monnify/webhook/trx", async (req, res) => {
   console.log("➡️ Headers:", JSON.stringify(req.headers, null, 2));
   console.log("📦 Body:", JSON.stringify(req.body, null, 2));
 
-  const {
-    eventType,
-    eventData: {
-      paymentStatus,
-      amountPaid,
-      paymentReference,
-      product: { reference }, // This is assumed to be user's email or UID
-    } = {},
-  } = req.body || {};
-
-  console.log("✅ Parsed Data:", {
-    eventType,
+const {
+  eventType,
+  eventData: {
     paymentStatus,
     amountPaid,
     paymentReference,
-    reference,
-  });
+    product: { reference },
+    customer: { email: customerEmail },
+    metaData: { email: metaEmail } = {} // ✅ safely extract email from metaData
+  } = {},
+} = req.body || {};
 
+console.log("✅ Parsed Data:", {
+  eventType,
+  paymentStatus,
+  amountPaid,
+  paymentReference,
+  reference,
+  metaEmail,
+  customerEmail
+});
 
 
   if (eventType === "SUCCESSFUL_TRANSACTION" && paymentStatus === "PAID") {
