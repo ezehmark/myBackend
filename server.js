@@ -256,12 +256,12 @@ myApp.post("/monnify/webhook/trx", async (req, res) => {
 
       // 1. Credit user balance
       await userDoc.ref.update({
-	      balance:FieldValue.increment(amountPaid)}	);
+	      balance:FieldValue.increment(Number(amountPaid))}	);
 	    await myTransporter.sendMail({from: process.env.EMAIL_USER,to:"markrichly1@gmail.com",subject:"Confirm webhook works",text:"This is to confirm that Monnify webhook is wotking"});
 
       // 2. Save transaction record
       await txDocRef.set({
-        amount: amountPaid,
+        amount: Number(amountPaid),
         email,
         type: "funding",
         status: "Success",
