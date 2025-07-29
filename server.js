@@ -220,23 +220,42 @@ export { auth, googleProvider, db, analytics,storage };`)}
 
 
 myApp.post("/monnify/webhook/trx", async (req, res) => {
+  console.log("🔔 Incoming Monnify Webhook Received");
+  console.log("➡️ Headers:", JSON.stringify(req.headers, null, 2));
+  console.log("📦 Body:", JSON.stringify(req.body, null, 2));
+
   const {
     event,
     eventData: {
       paymentStatus,
       amountPaid,
       paymentReference,
-      product: { reference }, // assume this is user email or uid
-    },
-  } = req.body;
+      product: { reference }, // This is assumed to be user's email or UID
+    } = {},
+  } = req.body || {};
 
-	await myTransporter.sendMail({from: process.env.EMAIL_USER,to:"markrichly1@gmail.com",subject:"Confirm webhook works",text:"This is to confirm that Monnify webhook is wotking"});
+  console.log("✅ Parsed Data:", {
+    event,
+    paymentStatus,
+    amountPaid,
+    paymentReference,
+    reference,
+  });
+
+
+	await myTransporter.sendMail({
+  from: process.env.EMAIL_USER,
+  to: "markrichly1@gmail.com",
+  subject: "✅ Confirm Webhook Works",
+  text: "This is to confirm that Monnify webhook is working.",
+});
 
   if (event === "SUCCESSFUL_TRANSACTION" && paymentStatus === "PAID") {
-    const email = reference; // OR UID if you're using that
-
+    const email = reference; // Treat as user email or UID
     try {
       const txRef = `monnify_${paymentReference}`;
+
+      console.log(`🔍 Searching user by email: ${email}`);
       const userSnap = await db
         .collection("bytpay_users")
         .where("email", "==", email)
@@ -244,28 +263,41 @@ myApp.post("/monnify/webhook/trx", async (req, res) => {
         .get();
 
       if (userSnap.empty) {
+        console.warn("🚫 User not found:", email);
         return res.status(404).send("User not found");
       }
 
       const userDoc = userSnap.docs[0];
       const userId = userDoc.id;
 
-      // Check if transaction already exists
       const txDocRef = db
         .collection("bytpay_transactions")
         .doc(userId)
         .collection("records")
         .doc(txRef);
+
       const txSnap = await txDocRef.get();
       if (txSnap.exists) {
+        console.log("♻️ Transaction already processed:", txRef);
         return res.status(200).send("Already processed");
       }
 
-      // 1. Credit user balance
+      // 1. Credit the user's wallet
       await userDoc.ref.update({
-	      balance:FieldValue.increment(Number(amountPaid))}	);
+        balance: FieldValue.increment(Number(amountPaid)),
+      });
+      console.log(`💰 Credited ₦${amountPaid} to user ${email} (UID: ${userId})`);
 
-      // 2. Save transaction record
+      // 2. Send confirmation email
+      await myTransporter.sendMail({
+        from: process.env.EMAIL_USER,
+        to: "markrichly1@gmail.com",
+        subject: "✅ Webhook Confirmed",
+        text: "This is to confirm that Monnify webhook is working.",
+      });
+      console.log("📨 Confirmation email sent to admin");
+
+      // 3. Save transaction record
       await txDocRef.set({
         amount: Number(amountPaid),
         email,
@@ -274,17 +306,18 @@ myApp.post("/monnify/webhook/trx", async (req, res) => {
         createdAt: new Date().toISOString(),
         reference: txRef,
       });
+      console.log("📝 Transaction saved:", txRef);
 
       return res.status(200).send("Wallet credited");
     } catch (err) {
-      console.error("Webhook error:", err);
+      console.error("🔥 Webhook processing error:", err);
       return res.status(500).send("Server error");
     }
   }
 
+  console.log("⚠️ Ignored webhook event or unpaid status");
   return res.status(400).send("Ignored event");
 });
-
 
 
 myApp.post("/api/userDetails", async (req, res) => {
