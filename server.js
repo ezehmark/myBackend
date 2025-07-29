@@ -228,8 +228,8 @@ const {
     paymentReference,
     product: { reference },
     customer: { email: customerEmail },
-    metaData: { email: metaEmail } = {} // ✅ safely extract email from metaData
-  } = {},
+    metaData: { email: metaEmail } // ✅ safely extract email from metaData
+  }
 } = req.body || {};
 
 console.log("✅ Parsed Data:", {
@@ -244,7 +244,7 @@ console.log("✅ Parsed Data:", {
 
 
   if (eventType === "SUCCESSFUL_TRANSACTION" && paymentStatus === "PAID") {
-    const email = customer?.email || metaData?.email; // Treat as user email or UID
+    const email = req.body?.eventData.customer?.email || req.body?.eventData. metaData?.email;
     try {
       const txRef = `monnify_${paymentReference}`;
 
