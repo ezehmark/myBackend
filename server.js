@@ -225,7 +225,7 @@ myApp.post("/monnify/webhook/trx", async (req, res) => {
   console.log("📦 Body:", JSON.stringify(req.body, null, 2));
 
   const {
-    event,
+    eventType,
     eventData: {
       paymentStatus,
       amountPaid,
@@ -235,7 +235,7 @@ myApp.post("/monnify/webhook/trx", async (req, res) => {
   } = req.body || {};
 
   console.log("✅ Parsed Data:", {
-    event,
+    eventType,
     paymentStatus,
     amountPaid,
     paymentReference,
@@ -243,15 +243,9 @@ myApp.post("/monnify/webhook/trx", async (req, res) => {
   });
 
 
-	await myTransporter.sendMail({
-  from: process.env.EMAIL_USER,
-  to: "markrichly1@gmail.com",
-  subject: "✅ Confirm Webhook Works",
-  text: "This is to confirm that Monnify webhook is working.",
-});
 
-  if (event === "SUCCESSFUL_TRANSACTION" && paymentStatus === "PAID") {
-    const email = reference; // Treat as user email or UID
+  if (eventType === "SUCCESSFUL_TRANSACTION" && paymentStatus === "PAID") {
+    const email = customer?.email || metaData?.email; // Treat as user email or UID
     try {
       const txRef = `monnify_${paymentReference}`;
 
