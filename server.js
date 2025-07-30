@@ -244,7 +244,7 @@ console.log("✅ Parsed Data:", {
 
 
   if (eventType === "SUCCESSFUL_TRANSACTION" && paymentStatus === "PAID") {
-    const email = req.body?.eventData.customer?.email || req.body?.eventData. metaData?.email;
+    const email = req.body?.eventData.customer?.email || req.body?.eventData.metaData?.email;
     try {
       const txRef = `monnify_${paymentReference}`;
 
