@@ -216,14 +216,13 @@ export { auth, googleProvider, db, analytics,storage };`)}
 
 
 myApp.post("/monnify/webhook/trx", async (req, res) => {
-  console.log("🔔 Incoming Monnify Webhook Received");
-  console.log("➡️ Headers:", JSON.stringify(req.headers, null, 2));
-  console.log("📦 Body:", JSON.stringify(req.body, null, 2));
+  console.log("🔔 Incoming Monnify Webhook");
 
-  // Safely extract from body using optional chaining and fallback
+  res.status(200).send("Received"); // ✅ IMMEDIATE response
+
   const {
     eventType,
-    eventData
+    eventData = {}
   } = req.body || {};
 
   const {
@@ -233,88 +232,70 @@ myApp.post("/monnify/webhook/trx", async (req, res) => {
     product,
     customer,
     metaData
-  } = eventData || {};
+  } = eventData;
 
   const reference = product?.reference;
   const customerEmail = customer?.email;
   const metaEmail = metaData?.email;
   const email = customerEmail || metaEmail;
 
-  console.log("✅ Parsed Data:", {
-    eventType,
-    paymentStatus,
-    amountPaid,
-    paymentReference,
-    reference,
-    metaEmail,
-    customerEmail
-  });
-
-  // Exit early if critical data is missing
-  if (!email || !paymentReference || !amountPaid) {
-    console.warn("❌ Missing critical data:", { email, paymentReference, amountPaid });
-    return res.status(400).send("Bad request: missing data");
+  if (
+    eventType !== "SUCCESSFUL_TRANSACTION" ||
+    paymentStatus !== "PAID" ||
+    !email ||
+    !paymentReference ||
+    !amountPaid
+  ) {
+    console.warn("❌ Invalid or incomplete data");
+    return;
   }
 
-  if (eventType === "SUCCESSFUL_TRANSACTION" && paymentStatus === "PAID") {
-    try {
-      const txRef = `monnify_${paymentReference}`;
+  try {
+    const txRef = `monnify_${paymentReference}`;
+    const userSnap = await db
+      .collection("bytpay_users")
+      .where("email", "==", email)
+      .limit(1)
+      .get();
 
-      console.log(`🔍 Searching user by email: ${email}`);
-      const userSnap = await db
-        .collection("bytpay_users")
-        .where("email", "==", email)
-        .limit(1)
-        .get();
-
-      if (userSnap.empty) {
-        console.warn("🚫 User not found:", email);
-        return res.status(404).send("User not found");
-      }
-
-      const userDoc = userSnap.docs[0];
-      const userId = userDoc.id;
-
-      const txDocRef = db
-        .collection("bytpay_transactions")
-        .doc(userId)
-        .collection("records")
-        .doc(txRef);
-
-      const txSnap = await txDocRef.get();
-      if (txSnap.exists) {
-        console.log("♻️ Transaction already processed:", txRef);
-        return res.status(200).send("Already processed");
-      }
-
-      // 1. Credit the user's wallet
-      await userDoc.ref.update({
-        balance: FieldValue.increment(Number(amountPaid)),
-      });
-      console.log(`💰 Credited ₦${amountPaid} to user ${email} (UID: ${userId})`);
-
-      // 2. Save transaction record
-      await txDocRef.set({
-        amount: Number(amountPaid),
-        email,
-        type: "funding",
-        status: "Success",
-        createdAt: new Date().toISOString(),
-        reference: txRef,
-      });
-      console.log("📝 Transaction saved:", txRef);
-
-      return res.status(200).send("Wallet credited");
-    } catch (err) {
-      console.error("🔥 Webhook processing error:", err);
-      return res.status(500).send("Server error");
+    if (userSnap.empty) {
+      console.warn("🚫 User not found:", email);
+      return;
     }
+
+    const userDoc = userSnap.docs[0];
+    const userId = userDoc.id;
+
+    const txDocRef = db
+      .collection("bytpay_transactions")
+      .doc(userId)
+      .collection("records")
+      .doc(txRef);
+
+    const txSnap = await txDocRef.get();
+    if (txSnap.exists) {
+      console.log("♻️ Already processed:", txRef);
+      return;
+    }
+
+    await userDoc.ref.update({
+      balance: admin.firestore.FieldValue.increment(Number(amountPaid)),
+    });
+
+    await txDocRef.set({
+      amount: Number(amountPaid),
+      email,
+      type: "funding",
+      status: "Success",
+      createdAt: new Date().toISOString(),
+      reference: txRef,
+    });
+
+    console.log("✅ Transaction completed:", txRef);
+  } catch (err) {
+    console.error("🔥 Webhook processing error:", err);
   }
-
-  console.log("⚠️ Ignored webhook event or unpaid status");
-  return res.status(400).send("Ignored event");
 });
-
 
 myApp.post("/api/userDetails", async (req, res) => {
   try {
