@@ -18,11 +18,12 @@ const server = http.createServer(myApp);
 const {sendPushNotificationToUser} = require("./sendfcm.js");
 
 const myWs = new WebSocket.Server({ server });
+const { db, admin } = require("./admin.js");
 const { FieldValue } = require("firebase-admin/firestore");
 
 //Firebase Admin imports and setUps:
 
-const db = require("./admin.js");
+//const db = require("./admin.js");
 
 
 myApp.use(myCors());
