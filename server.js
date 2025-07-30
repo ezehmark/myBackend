@@ -223,17 +223,14 @@ myApp.post("/monnify/webhook/trx", async (req, res) => {
 
   const {
     eventType,
-    eventData = {}
-  } = req.body || {};
-
-  const {
+    eventData:{
     paymentStatus,
     amountPaid,
     paymentReference,
     product,
     customer,
     metaData
-  } = eventData;
+  }} = req.body;
 
   const reference = product?.reference;
   const customerEmail = customer?.email;
