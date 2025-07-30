@@ -220,31 +220,43 @@ myApp.post("/monnify/webhook/trx", async (req, res) => {
   console.log("➡️ Headers:", JSON.stringify(req.headers, null, 2));
   console.log("📦 Body:", JSON.stringify(req.body, null, 2));
 
-const {
-  eventType,
-  eventData: {
+  // Safely extract from body using optional chaining and fallback
+  const {
+    eventType,
+    eventData
+  } = req.body || {};
+
+  const {
     paymentStatus,
     amountPaid,
     paymentReference,
-    product: { reference },
-    customer: { email: customerEmail },
-    metaData: { email: metaEmail } // ✅ safely extract email from metaData
+    product,
+    customer,
+    metaData
+  } = eventData || {};
+
+  const reference = product?.reference;
+  const customerEmail = customer?.email;
+  const metaEmail = metaData?.email;
+  const email = customerEmail || metaEmail;
+
+  console.log("✅ Parsed Data:", {
+    eventType,
+    paymentStatus,
+    amountPaid,
+    paymentReference,
+    reference,
+    metaEmail,
+    customerEmail
+  });
+
+  // Exit early if critical data is missing
+  if (!email || !paymentReference || !amountPaid) {
+    console.warn("❌ Missing critical data:", { email, paymentReference, amountPaid });
+    return res.status(400).send("Bad request: missing data");
   }
-} = req.body || {};
-
-console.log("✅ Parsed Data:", {
-  eventType,
-  paymentStatus,
-  amountPaid,
-  paymentReference,
-  reference,
-  metaEmail,
-  customerEmail
-});
-
 
   if (eventType === "SUCCESSFUL_TRANSACTION" && paymentStatus === "PAID") {
-    const email = req.body?.eventData.customer?.email || req.body?.eventData.metaData?.email;
     try {
       const txRef = `monnify_${paymentReference}`;
 
@@ -281,7 +293,7 @@ console.log("✅ Parsed Data:", {
       });
       console.log(`💰 Credited ₦${amountPaid} to user ${email} (UID: ${userId})`);
 
-      // 3. Save transaction record
+      // 2. Save transaction record
       await txDocRef.set({
         amount: Number(amountPaid),
         email,
