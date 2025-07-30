@@ -15,7 +15,7 @@ try {
     console.log("Firebase Admin SDK initialized successfully via environment variable.");
 } catch (error) {
     console.error("🚨🚨🚨 FATAL ERROR: Firebase Admin SDK initialization failed: 🚨🚨🚨", error);
-    // This is a critical error, the app cannot proceed without auth
+    // This is a critical error, the app cannot proceed without the  auth
     process.exit(1);
 }
 
