@@ -266,7 +266,7 @@ myApp.post("/monnify/webhook/trx", async (req, res) => {
 
     const txDocRef = db
       .collection("bytpay_transactions")
-      .doc(userId)
+      .doc(userDoc.data().email)
       .collection("records")
       .doc(txRef);
 
@@ -277,7 +277,7 @@ myApp.post("/monnify/webhook/trx", async (req, res) => {
     }
 
     await userDoc.ref.update({
-      balance: admin.firestore.FieldValue.increment(Number(amountPaid)),
+      balance:FieldValue.increment(Number(amountPaid)),
     });
 
     await txDocRef.set({
