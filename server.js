@@ -285,7 +285,7 @@ myApp.post("/monnify/webhook/trx", async (req, res) => {
       email,
       type: "funding",
       status: "Success",
-      createdAt: new Date().toISOString(),
+      createdAt: new Date(),
       reference: txRef,
     });
 
