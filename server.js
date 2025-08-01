@@ -215,22 +215,37 @@ export { auth, googleProvider, db, analytics,storage };`)}
 //BytPay Transactions WebHookfrom Monnify 
 //
 
+const crypto = require("crypto");
 
 myApp.post("/monnify/webhook/trx", async (req, res) => {
   console.log("🔔 Incoming Monnify Webhook");
 
   res.status(200).send("Received"); // ✅ IMMEDIATE response
 
+  // 🔐 Verify signature
+  const signature = req.headers["monnify-signature"];
+  const rawBody = JSON.stringify(req.body);
+  const hash = crypto
+    .createHmac("sha512","EZCW7SU78M6YU1WA8HP54M9L9TAL4DS2")
+    .update(rawBody)
+    .digest("hex");
+
+  if (signature !== hash) {
+    console.warn("🚨 Invalid Monnify Signature!");
+    return;
+  }
+
   const {
     eventType,
-    eventData:{
-    paymentStatus,
-    amountPaid,
-    paymentReference,
-    product,
-    customer,
-    metaData
-  }} = req.body;
+    eventData: {
+      paymentStatus,
+      amountPaid,
+      paymentReference,
+      product,
+      customer,
+      metaData,
+    },
+  } = req.body;
 
   const reference = product?.reference;
   const customerEmail = customer?.email;
@@ -257,7 +272,7 @@ myApp.post("/monnify/webhook/trx", async (req, res) => {
       .get();
 
     if (userSnap.empty) {
-      console.warn("🚫 User not found!:", email);
+      console.warn("🚫 User not found:", email);
       return;
     }
 
@@ -276,22 +291,24 @@ myApp.post("/monnify/webhook/trx", async (req, res) => {
       return;
     }
 
-    await userDoc.ref.update({
-      balance:FieldValue.increment(Number(amountPaid)),
-    });
-
-    await txDocRef.set({
-      amount: Number(amountPaid),
-      email,
-      type: "funding",
-      status: "Success",
-      createdAt: new Date(),
-      reference: txRef,
-    });
+    // 🔁 Parallel write
+    await Promise.all([
+      userDoc.ref.update({
+        balance: FieldValue.increment(Number(amountPaid)),
+      }),
+      txDocRef.set({
+        amount: Number(amountPaid),
+        email,
+        type: "funding",
+        status: "Success",
+        createdAt: new Date(),
+        reference: txRef,
+      }),
+    ]);
 
     console.log("✅ Transaction completed:", txRef);
   } catch (err) {
-    console.error("🔥 Webhook processing error:", err);
+    console.error("🔥 Webhook error:", err);
   }
 });
 
