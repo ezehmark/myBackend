@@ -380,6 +380,18 @@ const {phone,network,amount,reference}=req.body;
 	res.send(response.data);
 	console.log(JSON.stringify(response.data));
 
+});
+
+myApp.post("verifySmartCard",async(req,res)=>{
+const{cardNumber}=req.body;
+const response = await axios.get(                                 `https://pulseflow.com.ng/api/v1/services/4/categories/17/verify/${cardNumber}`,                                           
+	{                                                                 headers: {                                                        Authorization:
+              "Bearer tHH14mI7FbQu0RAJkYqmUXsozWZwBBNEnUdI1E4l56f1c0b7",
+          },                                                            },
+      );
+	res.send(response.data);
+	console.log(JSON.stringify(response.data));
+
 })
 myApp.post("/api/userDetails", async (req, res) => {
   try {
