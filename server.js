@@ -1,7 +1,7 @@
 require("dotenv").config();
 const myNodeMailer = require("nodemailer");
 const myExpress = require("express");
-const myApp = myExpress()
+const myApp = myExpress();
 const { createServer } = require("http");
 const { Server } = require("socket.io");
 const axios = require("axios");
@@ -15,7 +15,7 @@ const { v4: uuidv4 } = require("uuid");
 
 const server = http.createServer(myApp);
 
-const {sendPushNotificationToUser} = require("./sendfcm.js");
+const { sendPushNotificationToUser } = require("./sendfcm.js");
 
 const myWs = new WebSocket.Server({ server });
 const { db, admin } = require("./admin.js");
@@ -25,11 +25,8 @@ const { FieldValue } = require("firebase-admin/firestore");
 
 //const db = require("./admin.js");
 
-
 myApp.use(myCors());
-myApp.use(
-  myExpress.json()
-);
+myApp.use(myExpress.json());
 /*const mongUrl =
   "mongodb+srv://ezehmark1:MarkMongodb5050@cluster0.g2cxv.mongodb.net/mydb?retryWrites=true&w=majority";
 
@@ -96,7 +93,6 @@ myApp.get("/health", (req, res) => {
   res.status(200).json({ msg: "Backend is now Active" });
 });
 
-
 //CS Agent messages handling
 
 const io = new Server(server, {
@@ -109,8 +105,18 @@ myApp.post("/CSAgent", async (req, res) => {
     // Get formatted current date and time
     const date = new Date();
     const months = [
-      "January", "February", "March", "April", "May", "June",
-      "July", "August", "September", "October", "November", "December"
+      "January",
+      "February",
+      "March",
+      "April",
+      "May",
+      "June",
+      "July",
+      "August",
+      "September",
+      "October",
+      "November",
+      "December",
     ];
     const thisMonth = months[date.getMonth()];
     const thisDay = date.getDate();
@@ -130,7 +136,11 @@ myApp.post("/CSAgent", async (req, res) => {
     // Emit to frontend clients via socket
     io.emit("complaints", msgArrayWithTime);
 
-    console.log(msgArrayWithTime[0].msg, msgArrayWithTime[0].date, msgArrayWithTime[0].name);
+    console.log(
+      msgArrayWithTime[0].msg,
+      msgArrayWithTime[0].date,
+      msgArrayWithTime[0].name,
+    );
 
     // Send push notifications
     const pushMessages = msgArrayWithTime.map((item) => ({
@@ -174,12 +184,11 @@ myApp.get("/api/userDetails/:name", async (req, res) => {
   }
 });
 
-// Getting the tsx pahe for firebase client config 
+// Getting the tsx pahe for firebase client config
 
-
-myApp.get("/myFirebaseClient", (req,res)=>{
-	try{
-	res.json(`import { initializeApp } from "firebase/app";
+myApp.get("/myFirebaseClient", (req, res) => {
+  try {
+    res.json(`import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider } from "firebase/auth";  // Added auth imports
 import { getAnalytics } from "firebase/analytics";
 import {getFirestore} from "firebase/firestore";
@@ -207,12 +216,13 @@ const auth = getAuth(app);
 const googleProvider = new GoogleAuthProvider();
 const storage = getStorage(app);
 
-export { auth, googleProvider, db, analytics,storage };`)}
-	catch(err){res.json(err)}
+export { auth, googleProvider, db, analytics,storage };`);
+  } catch (err) {
+    res.json(err);
+  }
 });
 
-
-//BytPay Transactions WebHookfrom Monnify 
+//BytPay Transactions WebHookfrom Monnify
 //
 
 const crypto = require("crypto");
@@ -226,7 +236,7 @@ myApp.post("/monnify/webhook/trx", async (req, res) => {
   const signature = req.headers["monnify-signature"];
   const rawBody = JSON.stringify(req.body);
   const hash = crypto
-    .createHmac("sha512","EZCW7SU78M6YU1WA8HP54M9L9TAL4DS2")
+    .createHmac("sha512", "EZCW7SU78M6YU1WA8HP54M9L9TAL4DS2")
     .update(rawBody)
     .digest("hex");
 
@@ -316,14 +326,14 @@ myApp.post("/monnify/webhook/trx", async (req, res) => {
 
 // Get data variations
 myApp.get("/getDataVariations", async (req, res) => {
-	console.log("origin:", req.headers.origin);
+  console.log("origin:", req.headers.origin);
   console.log("referer:", req.headers.referer);
 
-const origin = req.headers.origin || req.headers.referer;
+  const origin = req.headers.origin || req.headers.referer;
   if (origin !== "https://bytpay.netlify.app") {
     return res.status(403).json({ error: "Forbidden: Invalid origin" });
   }
-  const { id } = req.query;  // ✅ Use query, not body
+  const { id } = req.query; // ✅ Use query, not body
 
   await axios
     .get(
@@ -332,15 +342,15 @@ const origin = req.headers.origin || req.headers.referer;
         headers: {
           Authorization: `Bearer ${process.env.bytpayAPI}`,
         },
-      }
+      },
     )
     .then((response) => {
       res.send(response.data);
-console.log(JSON.stringify(response.data));
+      console.log(JSON.stringify(response.data));
     })
     .catch((err) => {
       console.log(err.message);
-      res.status(500).send({ error: "Internal Server Error" });  // ✅ Optional error feedback
+      res.status(500).send({ error: "Internal Server Error" }); // ✅ Optional error feedback
     })
     .finally(() => console.log("Variations fetched successfully"));
 });
@@ -348,93 +358,118 @@ console.log(JSON.stringify(response.data));
 //Buy Data:
 //BuyData:
 
-
-myApp.post("/dataPurchase",async(req,res)=>{
-	console.log("origin:", req.headers.origin);
+myApp.post("/dataPurchase", async (req, res) => {
+  console.log("origin:", req.headers.origin);
   console.log("referer:", req.headers.referer);
-	const origin = req.headers.origin || req.headers.referer;
+  const origin = req.headers.origin || req.headers.referer;
   if (origin !== "https://bytpay.netlify.app") {
     return res.status(403).json({ error: "Forbidden: Invalid origin" });
   }
-const {phone,selectedPlan}=req.body;
+  const { phone, selectedPlan } = req.body;
 
-	const response = await axios.post(
-        `https://pulseflow.com.ng/api/v1/transactions/purchase/${selectedPlan}`,
-        { pin: 505050, parameters: { phone_number: phone } },                                                                     {
-          headers: {
-            Authorization:                                                    `Bearer ${process.env.bytpayAPI}`,
-          },
-        },
-      );
-	res.send(response.data);
-	console.log(JSON.stringify(response.data));
+  const response = await axios.post(
+    `https://pulseflow.com.ng/api/v1/transactions/purchase/${selectedPlan}`,
+    { pin: 505050, parameters: { phone_number: phone } },
+    {
+      headers: {
+        Authorization: `Bearer ${process.env.bytpayAPI}`,
+      },
+    },
+  );
+  res.send(response.data);
+  console.log(JSON.stringify(response.data));
 });
 
 //Buy Airtime
 //Buy airtime
 //
-myApp.post("/airtimePurchase",async(req,res)=>{
-	console.log("origin:", req.headers.origin);
+myApp.post("/airtimePurchase", async (req, res) => {
+  console.log("origin:", req.headers.origin);
   console.log("referer:", req.headers.referer);
-	const origin = req.headers.origin || req.headers.referer;
+  const origin = req.headers.origin || req.headers.referer;
   if (origin !== "https://bytpay.netlify.app") {
     return res.status(403).json({ error: "Forbidden: Invalid origin" });
   }
-const {phone,network,amount,reference}=req.body;
+  const { phone, network, amount, reference } = req.body;
 
-	const response = await axios.post(
-`https://pulseflow.com.ng/api/v1/transactions/purchase/${network}`,
-      {                                                                 pin: 505050,
-        parameters: {
-          phone_number: phone,
-          amount: amount,
-          reference: reference,
-	},
+  const response = await axios.post(
+    `https://pulseflow.com.ng/api/v1/transactions/purchase/${network}`,
+    {
+      pin: 505050,
+      parameters: {
+        phone_number: phone,
+        amount: amount,
+        reference: reference,
       },
-      {
-        headers: {                                                        Authorization:
-            `Bearer ${process.env.bytpayAPI}`,
-        },                                                            },
-    );
-	res.send(response.data);
-	console.log(JSON.stringify(response.data));
-
+    },
+    {
+      headers: { Authorization: `Bearer ${process.env.bytpayAPI}` },
+    },
+  );
+  res.send(response.data);
+  console.log(JSON.stringify(response.data));
 });
 
-//Verify smaetCard and meter number
-myApp.post("/verifySmartCard",async(req,res)=>{
-	console.log("origin:", req.headers.origin);
+//Verify smartCard and meter number
+myApp.post("/verifySmartCard", async (req, res) => {
+  console.log("origin:", req.headers.origin);
   console.log("referer:", req.headers.referer);
-	const origin = req.headers.origin || req.headers.referer;
+  const origin = req.headers.origin || req.headers.referer;
   if (origin !== "https://bytpay.netlify.app") {
     return res.status(403).json({ error: "Forbidden: Invalid origin" });
   }
-const{cardNumber}=req.body;
-const response = await axios.get(                                 `https://pulseflow.com.ng/api/v1/services/4/categories/17/verify/${cardNumber}`,                                           
-	{                                                                 headers: {                                                        Authorization:
-              `Bearer ${process.env.bytpayAPI}`,
-          },                                                            },
-      );
-	res.send(response.data);
-	console.log(JSON.stringify(response.data));
-
+  const { cardNumber } = req.body;
+  const response = await axios.get(
+    `https://pulseflow.com.ng/api/v1/services/4/categories/17/verify/${cardNumber}`,
+    { headers: { Authorization: `Bearer ${process.env.bytpayAPI}` } },
+  );
+  res.send(response.data);
+  console.log(JSON.stringify(response.data));
 });
 
-myApp.post("/getTvPackages",async(req,res)=>{
-	console.log("origin:", req.headers.origin);
+//Get tv Packages
+
+myApp.post("/getTvPackages", async (req, res) => {
+  console.log("origin:", req.headers.origin);
   console.log("referer:", req.headers.referer);
-	const origin = req.headers.origin || req.headers.referer;
+  const origin = req.headers.origin || req.headers.referer;
   if (origin !== "https://bytpay.netlify.app") {
     return res.status(403).json({ error: "Forbidden: Invalid origin" });
   }
-const{id}=req.body;
-const response = await axios.get(
-        `https://pulseflow.com.ng/api/v1/services/3/categories/${id}/products?page=1`,
-        {                                                                 headers: {                                                        Authorization:                                                    `Bearer ${process.env.bytpayAPI}`,                                                                  
-	},                                                            },                                                            );
-	res.send(response.data);
-	console.log(JSON.stringify(response.data));
-})
+  const { id } = req.body;
+  const response = await axios.get(
+    `https://pulseflow.com.ng/api/v1/services/3/categories/${id}/products?page=1`,
+    { headers: { Authorization: `Bearer ${process.env.bytpayAPI}` } },
+  );
+  res.send(response.data);
+  console.log(JSON.stringify(response.data));
+});
+
+// Get all NEPA state  variations
+myApp.get("/getNepaVariations", async (req, res) => {
+  console.log("origin:", req.headers.origin);
+  console.log("referer:", req.headers.referer);
+  const origin = req.headers.origin || req.headers.referer;
+  if (origin !== "https://bytpay.netlify.app") {
+    return res.status(403).json({ error: "Forbidden: Invalid origin" });
+  }
+  const { id } = req.query; // ✅ Use query, not body
+  await axios
+    .get("https://pulseflow.com.ng/api/v1/services/1/categories?page=1", {
+      headers: { Authorization: `Bearer ${process.env.bytpayAPI}` },
+    })
+    .then((response) => {
+      res.send(response.data);
+      console.log(JSON.stringify(response.data));
+    })
+    .catch((err) => {
+      console.log(err.message);
+      res.status(500).send({ error: "Internal Server Error" });
+      // ✅Optional error feedback
+    })
+    .finally(() => console.log("Variations fetched successfully"));
+});
+
 myApp.post("/api/userDetails", async (req, res) => {
   try {
     const { newPeople } = req.body;
@@ -448,7 +483,6 @@ myApp.post("/api/userDetails", async (req, res) => {
     console.error(`server encountered ${error} while uploading`);
   }
 });
-
 
 const mongooseSchema = new Mongoose.Schema({
   token: { type: String },
@@ -560,8 +594,6 @@ myApp.get("/coingecko/charts", async (req, res) => {
     res.status(500).json({ error: error.toString() });
   }
 });
-
-
 
 server.listen(PORT, () => {
   console.log(`My App is currently running at port: ${PORT}`);
