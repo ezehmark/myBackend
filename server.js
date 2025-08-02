@@ -316,6 +316,11 @@ myApp.post("/monnify/webhook/trx", async (req, res) => {
 
 // Get data variations
 myApp.get("/getDataVariations", async (req, res) => {
+
+const origin = req.headers.origin;
+  if (origin !== "https://bytpay.netlify.app") {
+    return res.status(403).json({ error: "Forbidden: Invalid origin" });
+  }
   const { id } = req.query;  // ✅ Use query, not body
 
   await axios
@@ -343,6 +348,10 @@ console.log(JSON.stringify(response.data));
 
 
 myApp.post("/dataPurchase",async(req,res)=>{
+	const origin = req.headers.origin;
+  if (origin !== "https://bytpay.netlify.app") {
+    return res.status(403).json({ error: "Forbidden: Invalid origin" });
+  }
 const {phone,selectedPlan}=req.body;
 
 	const response = await axios.post(
@@ -361,6 +370,10 @@ const {phone,selectedPlan}=req.body;
 //Buy airtime
 //
 myApp.post("/airtimePurchase",async(req,res)=>{
+	const origin = req.headers.origin;
+  if (origin !== "https://bytpay.netlify.app") {
+    return res.status(403).json({ error: "Forbidden: Invalid origin" });
+  }
 const {phone,network,amount,reference}=req.body;
 
 	const response = await axios.post(
@@ -384,6 +397,10 @@ const {phone,network,amount,reference}=req.body;
 
 //Verify smaetCard and meter number
 myApp.post("/verifySmartCard",async(req,res)=>{
+	const origin = req.headers.origin;
+  if (origin !== "https://bytpay.netlify.app") {
+    return res.status(403).json({ error: "Forbidden: Invalid origin" });
+  }
 const{cardNumber}=req.body;
 const response = await axios.get(                                 `https://pulseflow.com.ng/api/v1/services/4/categories/17/verify/${cardNumber}`,                                           
 	{                                                                 headers: {                                                        Authorization:
@@ -396,6 +413,10 @@ const response = await axios.get(                                 `https://pulse
 });
 
 myApp.post("/getTvPackages",async(req,res)=>{
+	const origin = req.headers.origin;
+  if (origin !== "https://bytpay.netlify.app") {
+    return res.status(403).json({ error: "Forbidden: Invalid origin" });
+  }
 const{id}=req.body;
 const response = await axios.get(
         `https://pulseflow.com.ng/api/v1/services/3/categories/${id}/products?page=1`,
