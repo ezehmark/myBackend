@@ -313,16 +313,31 @@ myApp.post("/monnify/webhook/trx", async (req, res) => {
 });
 
 //Get data variations:
-myApp.get("/getDataVariations",async(req,res)=>{
-const {id}=req.query;
 
-	await axios.get(                                                             `https://pulseflow.com.ng/api/v1/services/1/categories/${id}/products?page=1`,                                                  {                                                                 headers: {                                                        Authorization:                                                    "Bearer tHH14mI7FbQu0RAJkYqmUXsozWZwBBNEnUdI1E4l56f1c0b7",                                                                  },                                                            },                                                            )
-	.then((response) => {
-      res.json(response.data)})
-	.catch((err)=>console.log(err);
-	res.status(500).json({error:"Internal server failure"}))
-	.finally(()=>console.log("Transaction sucfeccful"))
+// Get data variations
+myApp.get("/getDataVariations", async (req, res) => {
+  const { id } = req.query;  // ✅ Use query, not body
+
+  await axios
+    .get(
+      `https://pulseflow.com.ng/api/v1/services/1/categories/${id}/products?page=1`,
+      {
+        headers: {
+          Authorization: "Bearer tHH14mI7FbQu0RAJkYqmUXsozWZwBBNEnUdI1E4l56f1c0b7",
+        },
+      }
+    )
+    .then((response) => {
+      res.send(response.data);  // ✅ This is fine
+    })
+    .catch((err) => {
+      console.log(err.message);
+      res.status(500).send({ error: "Internal Server Error" });  // ✅ Optional error feedback
+    })
+    .finally(() => console.log("Transaction successful"));
 });
+
+
 myApp.post("/dataPurchase",async(req,res)=>{
 const {phone,planSize}=req.body;
 })
