@@ -329,7 +329,7 @@ myApp.get("/getDataVariations", async (req, res) => {
     )
     .then((response) => {
       res.send(response.data);
-console.log(response.data);
+console.log(JSON.stringify(response.data));
     })
     .catch((err) => {
       console.log(err.message);
@@ -354,8 +354,33 @@ const {phone,selectedPlan}=req.body;
         },
       );
 	res.send(response.data);
+	console.log(JSON.stringify(response.data));
 });
 
+//Buy Airtime
+//Buy airtime
+//
+myApp.post("/airtimePurchase",async(req,res)=>{
+const {phone,network,amount,reference}=req.body;
+
+	const response = await axios.post(
+`https://pulseflow.com.ng/api/v1/transactions/purchase/${network}`,
+      {                                                                 pin: 505050,
+        parameters: {
+          phone_number: phone,
+          amount: amount,
+          reference: reference,
+	},
+      },
+      {
+        headers: {                                                        Authorization:
+            "Bearer tHH14mI7FbQu0RAJkYqmUXsozWZwBBNEnUdI1E4l56f1c0b7",
+        },                                                            },
+    );
+	res.send(response.data);
+	console.log(JSON.stringify(response.data));
+
+})
 myApp.post("/api/userDetails", async (req, res) => {
   try {
     const { newPeople } = req.body;
