@@ -453,9 +453,8 @@ myApp.get("/getNepaVariations", async (req, res) => {
   if (origin !== "https://bytpay.netlify.app") {
     return res.status(403).json({ error: "Forbidden: Invalid origin" });
   }
-  const { id } = req.query; // ✅ Use query, not body
   await axios
-    .get("https://pulseflow.com.ng/api/v1/services/1/categories?page=1", {
+    .get("https://pulseflow.com.ng/api/v1/services/4/categories?page=1", {
       headers: { Authorization: `Bearer ${process.env.bytpayAPI}` },
     })
     .then((response) => {
