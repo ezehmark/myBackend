@@ -446,7 +446,7 @@ myApp.post("/getTvPackages", async (req, res) => {
 });
 
 // Get all NEPA state  variations
-myApp.get("/getDISCOs", async (req, res) => {
+myApp.post("/getDISCOs", async (req, res) => {
   console.log("origin:", req.headers.origin);
   console.log("referer:", req.headers.referer);
   const origin = req.headers.origin || req.headers.referer;
