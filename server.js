@@ -474,8 +474,7 @@ myApp.post("/getDISCOs", async (req, res) => {
 //
 myApp.post("moniepoint/trx",async(req,res)=>{
 
-const{}=req.body;
-	console.log(JSON.stringify(req.body));
+console.log(JSON.stringify(req.body,null,2));
 })
 myApp.post("/api/userDetails", async (req, res) => {
   try {
