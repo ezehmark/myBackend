@@ -338,10 +338,23 @@ console.log(response.data);
     .finally(() => console.log("Transaction successful"));
 });
 
+//Buy Data:
+//BuyData:
+
 
 myApp.post("/dataPurchase",async(req,res)=>{
-const {phone,planSize}=req.body;
-})
+const {phone,selectedPlan}=req.body;
+
+	const response = await axios.post(
+        `https://pulseflow.com.ng/api/v1/transactions/purchase/${selectedPlan}`,
+        { pin: 505050, parameters: { phone_number: phone } },                                                                     {
+          headers: {
+            Authorization:                                                    "Bearer tHH14mI7FbQu0RAJkYqmUXsozWZwBBNEnUdI1E4l56f1c0b7",
+          },
+        },
+      );
+	res.send(response.data);
+});
 
 myApp.post("/api/userDetails", async (req, res) => {
   try {
