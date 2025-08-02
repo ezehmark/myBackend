@@ -312,6 +312,20 @@ myApp.post("/monnify/webhook/trx", async (req, res) => {
   }
 });
 
+//Get data variations:
+myApp.get("/getDataVariations",async(req,res)=>{
+const {id}=req.body;
+
+	await axios.get(                                                             `https://pulseflow.com.ng/api/v1/services/1/categories/${id}/products?page=1`,                                                  {                                                                 headers: {                                                        Authorization:                                                    "Bearer tHH14mI7FbQu0RAJkYqmUXsozWZwBBNEnUdI1E4l56f1c0b7",                                                                  },                                                            },                                                            )
+	.then((response) => {
+      res.send(response.data)})
+	.catch((err)=>console.log(err))
+	.finally(()=>console.log("Transaction sucfeccful"))
+});
+myApp.post("/dataPurchase",async(req,res)=>{
+const {phone,planSize}=req.body;
+})
+
 myApp.post("/api/userDetails", async (req, res) => {
   try {
     const { newPeople } = req.body;
