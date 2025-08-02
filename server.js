@@ -335,7 +335,7 @@ console.log(JSON.stringify(response.data));
       console.log(err.message);
       res.status(500).send({ error: "Internal Server Error" });  // ✅ Optional error feedback
     })
-    .finally(() => console.log("Transaction successful"));
+    .finally(() => console.log("Variations fetched successfully"));
 });
 
 //Buy Data:
@@ -382,7 +382,8 @@ const {phone,network,amount,reference}=req.body;
 
 });
 
-myApp.post("verifySmartCard",async(req,res)=>{
+//Verify smaetCard and meter number
+myApp.post("/verifySmartCard",async(req,res)=>{
 const{cardNumber}=req.body;
 const response = await axios.get(                                 `https://pulseflow.com.ng/api/v1/services/4/categories/17/verify/${cardNumber}`,                                           
 	{                                                                 headers: {                                                        Authorization:
@@ -392,6 +393,15 @@ const response = await axios.get(                                 `https://pulse
 	res.send(response.data);
 	console.log(JSON.stringify(response.data));
 
+});
+
+myApp.post("/getTvPackages",async()=>{
+const{id}=req.body;
+const response = await axios.get(
+        `https://pulseflow.com.ng/api/v1/services/3/categories/${id}/products?page=1`,
+        {                                                                 headers: {                                                        Authorization:                                                    "Bearer tHH14mI7FbQu0RAJkYqmUXsozWZwBBNEnUdI1E4l56f1c0b7",                                                                  },                                                            },                                                            );
+	res.send(response.data);
+	console.log(JSON.stringify(response.data));
 })
 myApp.post("/api/userDetails", async (req, res) => {
   try {
