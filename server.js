@@ -446,7 +446,7 @@ myApp.post("/getTvPackages", async (req, res) => {
 });
 
 // Get all NEPA state  variations
-myApp.get("/getNepaVariations", async (req, res) => {
+myApp.get("/getDISCOs", async (req, res) => {
   console.log("origin:", req.headers.origin);
   console.log("referer:", req.headers.referer);
   const origin = req.headers.origin || req.headers.referer;
@@ -454,7 +454,7 @@ myApp.get("/getNepaVariations", async (req, res) => {
     return res.status(403).json({ error: "Forbidden: Invalid origin" });
   }
   await axios
-    .get("https://pulseflow.com.ng/api/v1/services/4/categories?page=1", {
+    .get("https://pulseflow.com.ng/api/v1/services/4/categories/?page=1", {
       headers: { Authorization: `Bearer ${process.env.bytpayAPI}` },
     })
     .then((response) => {
