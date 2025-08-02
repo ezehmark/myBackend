@@ -328,7 +328,8 @@ myApp.get("/getDataVariations", async (req, res) => {
       }
     )
     .then((response) => {
-      res.send(response.data);  // ✅ This is fine
+      res.send(response.data);
+console.log(response.data);
     })
     .catch((err) => {
       console.log(err.message);
