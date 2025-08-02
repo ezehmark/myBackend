@@ -323,7 +323,7 @@ myApp.get("/getDataVariations", async (req, res) => {
       `https://pulseflow.com.ng/api/v1/services/1/categories/${id}/products?page=1`,
       {
         headers: {
-          Authorization: "Bearer tHH14mI7FbQu0RAJkYqmUXsozWZwBBNEnUdI1E4l56f1c0b7",
+          Authorization: `Bearer ${process.env.bytpayAPI}`,
         },
       }
     )
@@ -349,7 +349,7 @@ const {phone,selectedPlan}=req.body;
         `https://pulseflow.com.ng/api/v1/transactions/purchase/${selectedPlan}`,
         { pin: 505050, parameters: { phone_number: phone } },                                                                     {
           headers: {
-            Authorization:                                                    "Bearer tHH14mI7FbQu0RAJkYqmUXsozWZwBBNEnUdI1E4l56f1c0b7",
+            Authorization:                                                    `Bearer ${process.env.bytpayAPI}`,
           },
         },
       );
@@ -374,7 +374,7 @@ const {phone,network,amount,reference}=req.body;
       },
       {
         headers: {                                                        Authorization:
-            "Bearer tHH14mI7FbQu0RAJkYqmUXsozWZwBBNEnUdI1E4l56f1c0b7",
+            `Bearer ${process.env.bytpayAPI}`,
         },                                                            },
     );
 	res.send(response.data);
@@ -387,7 +387,7 @@ myApp.post("/verifySmartCard",async(req,res)=>{
 const{cardNumber}=req.body;
 const response = await axios.get(                                 `https://pulseflow.com.ng/api/v1/services/4/categories/17/verify/${cardNumber}`,                                           
 	{                                                                 headers: {                                                        Authorization:
-              "Bearer tHH14mI7FbQu0RAJkYqmUXsozWZwBBNEnUdI1E4l56f1c0b7",
+              `Bearer ${process.env.bytpayAPI}`,
           },                                                            },
       );
 	res.send(response.data);
@@ -399,7 +399,8 @@ myApp.post("/getTvPackages",async(req,res)=>{
 const{id}=req.body;
 const response = await axios.get(
         `https://pulseflow.com.ng/api/v1/services/3/categories/${id}/products?page=1`,
-        {                                                                 headers: {                                                        Authorization:                                                    "Bearer tHH14mI7FbQu0RAJkYqmUXsozWZwBBNEnUdI1E4l56f1c0b7",                                                                  },                                                            },                                                            );
+        {                                                                 headers: {                                                        Authorization:                                                    `Bearer ${process.env.bytpayAPI}`,                                                                  
+	},                                                            },                                                            );
 	res.send(response.data);
 	console.log(JSON.stringify(response.data));
 })
