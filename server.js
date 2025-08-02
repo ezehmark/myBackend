@@ -316,6 +316,8 @@ myApp.post("/monnify/webhook/trx", async (req, res) => {
 
 // Get data variations
 myApp.get("/getDataVariations", async (req, res) => {
+	console.log("origin:", req.headers.origin);
+  console.log("referer:", req.headers.referer);
 
 const origin = req.headers.origin || req.headers.referer;
   if (origin !== "https://bytpay.netlify.app") {
@@ -348,6 +350,8 @@ console.log(JSON.stringify(response.data));
 
 
 myApp.post("/dataPurchase",async(req,res)=>{
+	console.log("origin:", req.headers.origin);
+  console.log("referer:", req.headers.referer);
 	const origin = req.headers.origin || req.headers.referer;
   if (origin !== "https://bytpay.netlify.app") {
     return res.status(403).json({ error: "Forbidden: Invalid origin" });
@@ -370,6 +374,8 @@ const {phone,selectedPlan}=req.body;
 //Buy airtime
 //
 myApp.post("/airtimePurchase",async(req,res)=>{
+	console.log("origin:", req.headers.origin);
+  console.log("referer:", req.headers.referer);
 	const origin = req.headers.origin || req.headers.referer;
   if (origin !== "https://bytpay.netlify.app") {
     return res.status(403).json({ error: "Forbidden: Invalid origin" });
@@ -397,6 +403,8 @@ const {phone,network,amount,reference}=req.body;
 
 //Verify smaetCard and meter number
 myApp.post("/verifySmartCard",async(req,res)=>{
+	console.log("origin:", req.headers.origin);
+  console.log("referer:", req.headers.referer);
 	const origin = req.headers.origin || req.headers.referer;
   if (origin !== "https://bytpay.netlify.app") {
     return res.status(403).json({ error: "Forbidden: Invalid origin" });
@@ -413,6 +421,8 @@ const response = await axios.get(                                 `https://pulse
 });
 
 myApp.post("/getTvPackages",async(req,res)=>{
+	console.log("origin:", req.headers.origin);
+  console.log("referer:", req.headers.referer);
 	const origin = req.headers.origin || req.headers.referer;
   if (origin !== "https://bytpay.netlify.app") {
     return res.status(403).json({ error: "Forbidden: Invalid origin" });
