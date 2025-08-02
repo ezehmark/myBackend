@@ -395,7 +395,7 @@ const response = await axios.get(                                 `https://pulse
 
 });
 
-myApp.post("/getTvPackages",async()=>{
+myApp.post("/getTvPackages",async(req,res)=>{
 const{id}=req.body;
 const response = await axios.get(
         `https://pulseflow.com.ng/api/v1/services/3/categories/${id}/products?page=1`,
