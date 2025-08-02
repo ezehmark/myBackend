@@ -469,6 +469,14 @@ myApp.post("/getDISCOs", async (req, res) => {
     .finally(() => console.log("Variations fetched successfully"));
 });
 
+
+//Moniepoint webhook:
+//
+myApp.post("moniepoint/trx",async(req,res)=>{
+
+const{}=req.body;
+	console.log(JSON.stringify(req.body));
+})
 myApp.post("/api/userDetails", async (req, res) => {
   try {
     const { newPeople } = req.body;
