@@ -472,8 +472,8 @@ myApp.post("/getDISCOs", async (req, res) => {
 //Pay For Tv
 //
 myApp.post("/payForTv",async(req,res)=>{
-console.log("origin":req.headers.origin);
-console.log("referer":req.headers.referer);
+console.log("origin:",req.headers.origin);
+console.log("referer:",req.headers.referer);
 const origin = req.headers.origin || req.headers.referer;
 if(origin !=="https://bytpay.live"){
 return res.status(403).json({error:"Invalid origin request"});
