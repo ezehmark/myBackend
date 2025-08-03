@@ -469,6 +469,23 @@ myApp.post("/getDISCOs", async (req, res) => {
     .finally(() => console.log("Variations fetched successfully"));
 });
 
+//Pay For Tv
+//
+myApp.post("/payForTv",async(req,res)=>{
+console.log("origin":req.headers.origin);
+console.log("referer":req.headers.referer);
+const origin = req.headers.origin || req.headers.referer;
+if(origin !=="https://bytpay.netlify.app"){
+return res.status(403).json({error:"Invalid origin request"});
+}
+
+const {tvId,smart_card_number,amount,reference}=req.body;
+
+const response = await axios.post(                                      `https://pulseflow.com.ng/api/v1/transactions/purchase/${tvId}`,                                                                        
+	{                                                                       pin: 505050,
+          parameters: {
+            smart_card_number: tvP?.smartCardNumber,                              amount: tvP?.amount,                                                  reference: user?.email,                                             },                                                                  },                                                                    {                                                                       headers: {                                                              Authorization:                                                          "Bearer tHH14mI7FbQu0RAJkYqmUXsozWZwBBNEnUdI1E4l56f1c0b7",                                                                              },                                                                  },                                                                  );
+})
 
 //Moniepoint webhook:
 //
