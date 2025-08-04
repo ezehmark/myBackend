@@ -330,7 +330,7 @@ myApp.get("/getDataVariations", async (req, res) => {
   console.log("referer:", req.headers.referer);
 
   const origin = req.headers.origin || req.headers.referer;
-  if (origin !== "https://bytpay.live") {
+  if (origin !== "https://bytpay.live" && origin !== "https://bytpay.netlify.app") {
     return res.status(403).json({ error: "Forbidden: Invalid origin" });
   }
   const { id } = req.query; // ✅ Use query, not body
@@ -362,7 +362,7 @@ myApp.post("/dataPurchase", async (req, res) => {
   console.log("origin:", req.headers.origin);
   console.log("referer:", req.headers.referer);
   const origin = req.headers.origin || req.headers.referer;
-  if (origin !== "https://bytpay.live") {
+  if (origin !== "https://bytpay.live" && origin !== "https://bytpay.netlify.app") {
     return res.status(403).json({ error: "Forbidden: Invalid origin" });
   }
   const { phone, selectedPlan } = req.body;
@@ -387,7 +387,7 @@ myApp.post("/airtimePurchase", async (req, res) => {
   console.log("origin:", req.headers.origin);
   console.log("referer:", req.headers.referer);
   const origin = req.headers.origin || req.headers.referer;
-  if (origin !== "https://bytpay.live") {
+  if (origin !== "https://bytpay.live" && origin !== "https://bytpay.netlify.app") {
     return res.status(403).json({ error: "Forbidden: Invalid origin" });
   }
   const { phone, network, amount, reference } = req.body;
@@ -415,7 +415,7 @@ myApp.post("/verifySmartCard", async (req, res) => {
   console.log("origin:", req.headers.origin);
   console.log("referer:", req.headers.referer);
   const origin = req.headers.origin || req.headers.referer;
-  if (origin !== "https://bytpay.live") {
+  if (origin !== "https://bytpay.live" && origin !== "https://bytpay.netlify.app") {
     return res.status(403).json({ error: "Forbidden: Invalid origin" });
   }
   const { cardNumber } = req.body;
@@ -433,7 +433,7 @@ myApp.post("/getTvPackages", async (req, res) => {
   console.log("origin:", req.headers.origin);
   console.log("referer:", req.headers.referer);
   const origin = req.headers.origin || req.headers.referer;
-  if (origin !== "https://bytpay.live") {
+  if (origin !== "https://bytpay.live" && origin !== "https://bytpay.netlify.app") {
     return res.status(403).json({ error: "Forbidden: Invalid origin" });
   }
   const { id } = req.body;
@@ -450,7 +450,7 @@ myApp.post("/getDISCOs", async (req, res) => {
   console.log("origin:", req.headers.origin);
   console.log("referer:", req.headers.referer);
   const origin = req.headers.origin || req.headers.referer;
-  if (origin !== "https://bytpay.live") {
+  if (origin !== "https://bytpay.live" && origin !== "https://bytpay.netlify.app") {
     return res.status(403).json({ error: "Forbidden: Invalid origin" });
   }
   await axios
@@ -475,7 +475,7 @@ myApp.post("/payForTv",async(req,res)=>{
 console.log("origin:",req.headers.origin);
 console.log("referer is:",req.headers.referer);
 const origin = req.headers.origin || req.headers.referer;
-if(origin !=="https://bytpay.live"){
+if (origin !== "https://bytpay.live" && origin !== "https://bytpay.netlify.app"){
 return res.status(403).json({error:"Invalid origin request"});
 }
 
