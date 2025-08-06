@@ -521,17 +521,35 @@ myApp.post("/payForTv", async (req, res) => {
   );
 });
 
-// Get Exam                                               
+// Get Exam
 
-myApp.post("/getExam", async (req, res) => {                   
-	console.log("origin:", req.headers.origin);                           console.log("referer:", req.headers.referer);                                                                                               const origin = req.headers.origin || req.headers.referer;
-  if (                                                                    origin !== "https://bytpay.live" &&                                   origin !== "https://bytpay.netlify.app"                             ) {                                                                     return res.status(403).json({ error: "Forbidden: Invalid origin" });                                                                      }                                                                     const { id } = req.query; // ✅ Use query, not body                                                                                  
-	await axios                                                             .get(                                                                   `https://pulseflow.com.ng/api/v1/services/5/categories/20/products?page=1`,
+myApp.post("/getExam", async (req, res) => {
+  console.log("origin:", req.headers.origin);
+  console.log("referer:", req.headers.referer);
+  const origin = req.headers.origin || req.headers.referer;
+  if (
+    origin !== "https://bytpay.live" &&
+    origin !== "https://bytpay.netlify.app"
+  ) {
+    return res.status(403).json({ error: "Forbidden: Invalid origin" });
+  }
+  await axios
+    .get(
+      `https://pulseflow.com.ng/api/v1/services/5/categories/20/products?page=1`,
       {
-        headers: {                                                              Authorization: `Bearer ${process.env.bytpayAPI}`,
-        },                                                                  },                                                                  )
-    .then((response) => {                                                   res.send(response.data);                                              console.log(JSON.stringify(response.data));                         })                                                                    .catch((err) => {                                                       console.log(err.message);                                             res.status(500).send({ error: "Internal Server Error" }); // ✅ Optional error feedback
-    })                                                                    .finally(() => console.log("Variations fetched successfully"));   });
+        headers: { Authorization: `Bearer ${process.env.bytpayAPI}` },
+      },
+    )
+    .then((response) => {
+      res.send(response.data);
+      console.log(JSON.stringify(response.data));
+    })
+    .catch((err) => {
+      console.log(err.message);
+      res.status(500).send({ error: "Internal Server Error" }); // ✅ Optional error feedback
+    })
+    .finally(() => console.log("Variations fetched successfully"));
+});
 
 //Buy Exams PIN
 myApp.post("/getExamsPin", async (req, res) => {
