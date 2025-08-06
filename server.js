@@ -548,7 +548,7 @@ myApp.post("/getExam", async (req, res) => {
       console.log(err.message);
       res.status(500).send({ error: "Internal Server Error" }); // ✅ Optional error feedback
     })
-    .finally(() => console.log("Variations fetched successfully"));
+    .finally(() => console.log("All fetched successfully"));
 });
 
 //Buy Exams PIN
