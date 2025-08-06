@@ -330,7 +330,10 @@ myApp.get("/getDataVariations", async (req, res) => {
   console.log("referer:", req.headers.referer);
 
   const origin = req.headers.origin || req.headers.referer;
-  if (origin !== "https://bytpay.live" && origin !== "https://bytpay.netlify.app") {
+  if (
+    origin !== "https://bytpay.live" &&
+    origin !== "https://bytpay.netlify.app"
+  ) {
     return res.status(403).json({ error: "Forbidden: Invalid origin" });
   }
   const { id } = req.query; // ✅ Use query, not body
@@ -362,7 +365,10 @@ myApp.post("/dataPurchase", async (req, res) => {
   console.log("origin:", req.headers.origin);
   console.log("referer:", req.headers.referer);
   const origin = req.headers.origin || req.headers.referer;
-  if (origin !== "https://bytpay.live" && origin !== "https://bytpay.netlify.app") {
+  if (
+    origin !== "https://bytpay.live" &&
+    origin !== "https://bytpay.netlify.app"
+  ) {
     return res.status(403).json({ error: "Forbidden: Invalid origin" });
   }
   const { phone, selectedPlan } = req.body;
@@ -387,7 +393,10 @@ myApp.post("/airtimePurchase", async (req, res) => {
   console.log("origin:", req.headers.origin);
   console.log("referer:", req.headers.referer);
   const origin = req.headers.origin || req.headers.referer;
-  if (origin !== "https://bytpay.live" && origin !== "https://bytpay.netlify.app") {
+  if (
+    origin !== "https://bytpay.live" &&
+    origin !== "https://bytpay.netlify.app"
+  ) {
     return res.status(403).json({ error: "Forbidden: Invalid origin" });
   }
   const { phone, network, amount, reference } = req.body;
@@ -415,7 +424,10 @@ myApp.post("/verifySmartCard", async (req, res) => {
   console.log("origin:", req.headers.origin);
   console.log("referer:", req.headers.referer);
   const origin = req.headers.origin || req.headers.referer;
-  if (origin !== "https://bytpay.live" && origin !== "https://bytpay.netlify.app") {
+  if (
+    origin !== "https://bytpay.live" &&
+    origin !== "https://bytpay.netlify.app"
+  ) {
     return res.status(403).json({ error: "Forbidden: Invalid origin" });
   }
   const { cardNumber } = req.body;
@@ -433,7 +445,10 @@ myApp.post("/getTvPackages", async (req, res) => {
   console.log("origin:", req.headers.origin);
   console.log("referer:", req.headers.referer);
   const origin = req.headers.origin || req.headers.referer;
-  if (origin !== "https://bytpay.live" && origin !== "https://bytpay.netlify.app") {
+  if (
+    origin !== "https://bytpay.live" &&
+    origin !== "https://bytpay.netlify.app"
+  ) {
     return res.status(403).json({ error: "Forbidden: Invalid origin" });
   }
   const { id } = req.body;
@@ -450,7 +465,10 @@ myApp.post("/getDISCOs", async (req, res) => {
   console.log("origin:", req.headers.origin);
   console.log("referer:", req.headers.referer);
   const origin = req.headers.origin || req.headers.referer;
-  if (origin !== "https://bytpay.live" && origin !== "https://bytpay.netlify.app") {
+  if (
+    origin !== "https://bytpay.live" &&
+    origin !== "https://bytpay.netlify.app"
+  ) {
     return res.status(403).json({ error: "Forbidden: Invalid origin" });
   }
   await axios
@@ -471,28 +489,81 @@ myApp.post("/getDISCOs", async (req, res) => {
 
 //Pay For Tv
 //
-myApp.post("/payForTv",async(req,res)=>{
-console.log("origin:",req.headers.origin);
-console.log("referer is:",req.headers.referer);
-const origin = req.headers.origin || req.headers.referer;
-if (origin !== "https://bytpay.live" && origin !== "https://bytpay.netlify.app"){
-return res.status(403).json({error:"Invalid origin request"});
-}
+myApp.post("/payForTv", async (req, res) => {
+  console.log("origin:", req.headers.origin);
+  console.log("referer is:", req.headers.referer);
+  const origin = req.headers.origin || req.headers.referer;
+  if (
+    origin !== "https://bytpay.live" &&
+    origin !== "https://bytpay.netlify.app"
+  ) {
+    return res.status(403).json({ error: "Invalid origin request" });
+  }
 
-const {tvId,smart_card_number,amount,reference}=req.body;
+  const { tvId, smart_card_number, amount, reference } = req.body;
 
-const response = await axios.post(                                      `https://pulseflow.com.ng/api/v1/transactions/purchase/${tvId}`,                                                                        
-	{                                                                       pin: 505050,
-          parameters: {
-            smart_card_number: tvP?.smartCardNumber,                              amount: tvP?.amount,                                                  reference: user?.email,                                             },                                                                  },                                                                    {                                                                       headers: {                                                              Authorization:                                                          "Bearer tHH14mI7FbQu0RAJkYqmUXsozWZwBBNEnUdI1E4l56f1c0b7",                                                                              },                                                                  },                                                                  );
-})
+  const response = await axios.post(
+    `https://pulseflow.com.ng/api/v1/transactions/purchase/${tvId}`,
+    {
+      pin: 505050,
+      parameters: {
+        smart_card_number: tvP?.smartCardNumber,
+        amount: tvP?.amount,
+        reference: user?.email,
+      },
+    },
+    {
+      headers: {
+        Authorization:
+          "Bearer tHH14mI7FbQu0RAJkYqmUXsozWZwBBNEnUdI1E4l56f1c0b7",
+      },
+    },
+  );
+});
+
+// Get Exam                                               
+
+myApp.post("/getExam", async (req, res) => {                   
+	console.log("origin:", req.headers.origin);                           console.log("referer:", req.headers.referer);                                                                                               const origin = req.headers.origin || req.headers.referer;
+  if (                                                                    origin !== "https://bytpay.live" &&                                   origin !== "https://bytpay.netlify.app"                             ) {                                                                     return res.status(403).json({ error: "Forbidden: Invalid origin" });                                                                      }                                                                     const { id } = req.query; // ✅ Use query, not body                                                                                  
+	await axios                                                             .get(                                                                   `https://pulseflow.com.ng/api/v1/services/5/categories/20/products?page=1`,
+      {
+        headers: {                                                              Authorization: `Bearer ${process.env.bytpayAPI}`,
+        },                                                                  },                                                                  )
+    .then((response) => {                                                   res.send(response.data);                                              console.log(JSON.stringify(response.data));                         })                                                                    .catch((err) => {                                                       console.log(err.message);                                             res.status(500).send({ error: "Internal Server Error" }); // ✅ Optional error feedback
+    })                                                                    .finally(() => console.log("Variations fetched successfully"));   });
+
+//Buy Exams PIN
+myApp.post("/getExamsPin", async (req, res) => {
+  console.log("origin:", req.headers.origin);
+  console.log("referer:", req.headers.referer);
+  const origin = req.headers.origin || req.headers.referer;
+  if (
+    origin !== "https://bytpay.live" &&
+    origin !== "https://bytpay.netlify.app"
+  ) {
+    return res.status(403).json({ error: "Forbidden: Invalid origin" });
+  }
+  const { id } = req.body;
+  const response = await axios.get(
+    `https://pulseflow.com.ng/api/v1/purchase/${id}`,
+    {
+      pin: 505050,
+      parameters: {
+        quantity: 1,
+      },
+    },
+    { headers: { Authorization: `Bearer ${process.env.bytpayAPI}` } },
+  );
+  res.send(response.data);
+  console.log(JSON.stringify(response.data));
+});
 
 //Moniepoint webhook:
 //
-myApp.post("moniepoint/trx",async(req,res)=>{
-
-console.log(JSON.stringify(req.body,null,2));
-})
+myApp.post("moniepoint/trx", async (req, res) => {
+  console.log(JSON.stringify(req.body, null, 2));
+});
 myApp.post("/api/userDetails", async (req, res) => {
   try {
     const { newPeople } = req.body;
