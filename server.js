@@ -371,11 +371,11 @@ myApp.post("/dataPurchase", async (req, res) => {
   ) {
     return res.status(403).json({ error: "Forbidden: Invalid origin" });
   }
-  const { phone, selectedPlan } = req.body;
+  const { phone, selectedPlan, ref } = req.body;
 
   const response = await axios.post(
     `https://pulseflow.com.ng/api/v1/transactions/purchase/${selectedPlan}`,
-    { pin: 505050, parameters: { phone_number: phone } },
+    { pin: 505050, parameters: {reference:ref, phone_number: phone } },
     {
       headers: {
         Authorization: `Bearer ${process.env.bytpayAPI}`,
